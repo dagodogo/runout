@@ -4,7 +4,7 @@ import { estimateEquity, combosForHand } from './equity';
 import { classifyBoard, detectDraws, type BoardTexture } from './boardTexture';
 import { evOfBet, evOfCall } from './odds';
 import { ALL_HANDS } from './hands';
-import { RFI_POSITIONS, bbDefendMix, rfiMix, type RfiPosition } from './ranges';
+import { defendersFor, defendMix, positionsForSize, rfiMix, type Position, type RfiPosition, type TableSize } from './ranges';
 import { LEAK_CATEGORY_LABEL, type LeakCategory } from './scenarios';
 
 export type Street = 'flop' | 'turn' | 'river';
@@ -21,8 +21,9 @@ export interface GeneratedScenario {
   street: Street;
   mode: FacingMode;
   category: LeakCategory;
-  heroPosition: RfiPosition | 'BB';
-  villainPosition: RfiPosition | 'BB';
+  tableSize: TableSize;
+  heroPosition: Position;
+  villainPosition: Position;
   isHeroAggressor: boolean;
   board: Card[];
   heroCards: [Card, Card];
@@ -39,6 +40,27 @@ export interface GeneratedScenario {
 
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/** Weights toward the spots that actually happen most in real poker — BB
+ * defends far more often than any single cold-call, blinds cold-calling less
+ * than a later non-blind seat with position. */
+function pickDefender(defenders: Position[]): Position {
+  const weighted = defenders.map((pos) => {
+    let weight = 1;
+    if (pos === 'BB') weight = 4;
+    else if (pos === 'SB') weight = 0.4;
+    else if (pos === 'BTN' || pos === 'CO') weight = 1.6;
+    else weight = 0.6;
+    return { pos, weight };
+  });
+  const total = weighted.reduce((sum, w) => sum + w.weight, 0);
+  let roll = Math.random() * total;
+  for (const w of weighted) {
+    roll -= w.weight;
+    if (roll <= 0) return w.pos;
+  }
+  return weighted[weighted.length - 1].pos;
 }
 
 function randRange(min: number, max: number): number {
@@ -94,7 +116,7 @@ function categorize(mode: FacingMode, street: Street, hasDraw: boolean, bestOpti
 
 const TEXTURE_LINES = {
   dryHighAggressor: [
-    "This board is high and disconnected — it hits your opening range far more than a big blind caller's range, so you're the one with the advantage here.",
+    "This board is high and disconnected — it hits your opening range far more than a caller's range, so you're the one with the advantage here.",
     "Dry, high-card boards like this favor the preflop raiser's range almost across the board — few hands beat you and few draws are live.",
   ],
   wetLowDefender: [
@@ -188,8 +210,10 @@ function pickExplanation(
 
 let counter = 0;
 
-export function generateScenario(): GeneratedScenario {
-  const raiserPos: RfiPosition = pick([...RFI_POSITIONS]);
+export function generateScenario(tableSize: TableSize = 6): GeneratedScenario {
+  const rfiPositions = positionsForSize(tableSize).filter((p): p is RfiPosition => p !== 'BB');
+  const raiserPos = pick(rfiPositions);
+  const defenderPos = pickDefender(defendersFor(raiserPos, tableSize));
   const heroIsRaiser = Math.random() < 0.5;
   const street: Street = pick<Street>(['flop', 'flop', 'flop', 'turn', 'turn', 'river']);
   const mode: FacingMode = heroIsRaiser ? 'checked' : 'facing-bet';
@@ -198,8 +222,8 @@ export function generateScenario(): GeneratedScenario {
 
   // Deal hero's hand from a realistic range for their role.
   const raiserRange = rangeLabelsAbove((h) => rfiMix(raiserPos, h).raise, 0.15);
-  const bbCallRange = rangeLabelsAbove((h) => bbDefendMix(h).call, 0.15);
-  const heroRangeLabels = heroIsRaiser ? raiserRange : bbCallRange;
+  const defenderCallRange = rangeLabelsAbove((h) => defendMix(h, raiserPos, defenderPos).call, 0.15);
+  const heroRangeLabels = heroIsRaiser ? raiserRange : defenderCallRange;
   const heroCards = dealHandFromRange(heroRangeLabels, deck);
   const unusedAfterHero = removeCards(deck, heroCards);
 
@@ -212,7 +236,7 @@ export function generateScenario(): GeneratedScenario {
   const catLabel = handCategoryLabel(heroScore, heroCards, board);
 
   // Villain's range: whichever side hero *isn't* playing.
-  const villainRangeLabels = heroIsRaiser ? bbCallRange : raiserRange;
+  const villainRangeLabels = heroIsRaiser ? defenderCallRange : raiserRange;
   const equityResult = estimateEquity({ heroCards, board, villainRangeLabels, iterations: 320 });
   const equity = equityResult.equity;
   const equityIfContinues = Math.max(0.05, equity - 0.08);
@@ -268,8 +292,9 @@ export function generateScenario(): GeneratedScenario {
     street,
     mode,
     category,
-    heroPosition: heroIsRaiser ? raiserPos : 'BB',
-    villainPosition: heroIsRaiser ? 'BB' : raiserPos,
+    tableSize,
+    heroPosition: heroIsRaiser ? raiserPos : defenderPos,
+    villainPosition: heroIsRaiser ? defenderPos : raiserPos,
     isHeroAggressor: heroIsRaiser,
     board,
     heroCards,

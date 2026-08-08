@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PositionSelector } from '@/components/trainer/PositionSelector';
 import { RangeGrid } from '@/components/trainer/RangeGrid';
-import type { Position } from '@/lib/poker/ranges';
+import { positionsForSize, type Position } from '@/lib/poker/ranges';
+
+const POSITIONS = positionsForSize(6);
 
 export function RangeChartTeaser() {
   const [position, setPosition] = useState<Position>('BTN');
@@ -19,7 +21,7 @@ export function RangeChartTeaser() {
             blend zones — the hands most players get wrong.
           </p>
         </div>
-        <PositionSelector value={position} onChange={setPosition} />
+        <PositionSelector value={position} onChange={setPosition} positions={POSITIONS} />
       </div>
       <div className="mt-8">
         <RangeGrid position={position} />

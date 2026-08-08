@@ -33,7 +33,11 @@ function handFeatureLine(hand: HandCell): string {
 
 const POSITION_LINE: Record<Position, string> = {
   UTG: "you're first to act against a full table behind you, so only the hands that play well against everyone's range are profitable opens.",
+  UTG1: "you're still deep in the field with most of the table left to act — barely any wider than a straight UTG open.",
+  UTG2: "there's still a full table behind you, but the range can start opening up a little as fewer players remain.",
   MP: "there are still several players left to act, so the range opens up a bit from UTG but still needs to respect what's behind you.",
+  LJ: "with the button and cutoff still to come, the range widens further, but late-position steals and squeezes are still a real risk.",
+  HJ: "one seat before the cutoff, you're close enough to the button that a noticeably wider range starts printing money.",
   CO: "with only the button and blinds left to act, a lot more hands become profitable opens here.",
   BTN: "you'll have position on the whole rest of the hand no matter who calls — that positional edge is why the button opens the widest range at the table.",
   SB: "you only need to get through the big blind, and with position gone postflop, a wide-but-careful range makes sense here.",

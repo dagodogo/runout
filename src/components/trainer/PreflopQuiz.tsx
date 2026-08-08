@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { weightedRandomHand, type HandCell } from '@/lib/poker/hands';
-import { getMix, positionDescription, type Action, type Position } from '@/lib/poker/ranges';
+import { getMix, positionDescription, type Action, type Position, type RfiPosition, type TableSize } from '@/lib/poker/ranges';
 import { explainPreflopDecision } from '@/lib/poker/preflopExplain';
 import { freshDeck, cardDisplay } from '@/lib/poker/cards';
 import { combosForHand } from '@/lib/poker/equity';
@@ -29,12 +29,18 @@ function dealRound(excludeLabel?: string): Round {
   return { hand, cards: [cardDisplay(c1), cardDisplay(c2)], answered: null };
 }
 
-export function PreflopQuiz({ position }: { position: Position }) {
+interface PreflopQuizProps {
+  position: Position;
+  tableSize?: TableSize;
+  openerPosition?: RfiPosition;
+}
+
+export function PreflopQuiz({ position, tableSize = 6, openerPosition = 'BTN' }: PreflopQuizProps) {
   const [round, setRound] = useState<Round>(() => dealRound());
   const [session, setSession] = useState({ correct: 0, total: 0, streak: 0 });
   const recordPreflop = useProfileStore((s) => s.recordPreflop);
 
-  const mix = getMix(position, round.hand);
+  const mix = getMix(position, round.hand, openerPosition);
   const dominant: Action = mix.raise >= mix.call && mix.raise >= mix.fold ? 'raise' : mix.call >= mix.fold ? 'call' : 'fold';
 
   const actions: Action[] = position === 'BB' ? ['raise', 'call', 'fold'] : ['raise', 'fold'];
@@ -66,14 +72,19 @@ export function PreflopQuiz({ position }: { position: Position }) {
   return (
     <Card className="mx-auto w-full max-w-xl p-6 sm:p-8">
       <div className="flex items-center justify-between text-xs text-ink-muted">
-        <span>{positionDescription(position)}</span>
+        <span>{positionDescription(position, openerPosition)}</span>
         <span className="font-mono">
           {session.correct}/{session.total} &middot; streak {session.streak}
         </span>
       </div>
 
       <div className="mt-5">
-        <PokerTable heroPosition={position} heroCards={round.cards} />
+        <PokerTable
+          heroPosition={position}
+          heroCards={round.cards}
+          tableSize={tableSize}
+          villainPosition={position === 'BB' ? openerPosition : undefined}
+        />
       </div>
 
       <div className="mt-6 text-center">

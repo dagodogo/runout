@@ -1,9 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 import { weightedRandomHand, type HandCell } from '@/lib/poker/hands';
-import { RFI_CONFIG, RFI_POSITIONS, getMix, type RfiPosition } from '@/lib/poker/ranges';
+import { RFI_CONFIG, getMix, positionsForSize, type RfiPosition, type TableSize } from '@/lib/poker/ranges';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Tabs } from '@/components/ui/Tabs';
+import { TableSizeSelector } from './TableSizeSelector';
 import { useProfileStore } from '@/lib/store/profile';
 import { cn } from '@/lib/cn';
 
@@ -21,16 +22,34 @@ function drawMixedHand(position: RfiPosition, excludeLabel?: string): HandCell {
 }
 
 export function GtoFrequencyTrainer() {
+  const [tableSize, setTableSize] = useState<TableSize>(6);
   const [position, setPosition] = useState<RfiPosition>('CO');
   const [hand, setHand] = useState<HandCell>(() => drawMixedHand('CO'));
   const [guess, setGuess] = useState<number | null>(null);
   const [session, setSession] = useState({ points: 0, total: 0 });
   const recordPreflop = useProfileStore((s) => s.recordPreflop);
 
+  const rfiPositions = useMemo(
+    () => positionsForSize(tableSize).filter((p): p is RfiPosition => p !== 'BB'),
+    [tableSize],
+  );
+
   const mix = useMemo(() => getMix(position, hand), [position, hand]);
   const actualPct = Math.round(mix.raise * 100);
   const diff = guess === null ? null : Math.abs(guess - actualPct);
   const grade = diff === null ? null : diff <= 10 ? 'exact' : diff <= 25 ? 'close' : 'off';
+
+  const changeTableSize = useCallback(
+    (size: TableSize) => {
+      setTableSize(size);
+      const next = positionsForSize(size).filter((p): p is RfiPosition => p !== 'BB');
+      const nextPosition = next.includes(position) ? position : 'CO';
+      setPosition(nextPosition);
+      setHand(drawMixedHand(nextPosition));
+      setGuess(null);
+    },
+    [position],
+  );
 
   const changePosition = useCallback((p: RfiPosition) => {
     setPosition(p);
@@ -58,11 +77,14 @@ export function GtoFrequencyTrainer() {
   return (
     <Card className="mx-auto w-full max-w-xl p-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Tabs
-          value={position}
-          onChange={changePosition}
-          options={RFI_POSITIONS.map((p) => ({ value: p, label: RFI_CONFIG[p].label }))}
-        />
+        <div className="flex flex-wrap items-center gap-3">
+          <TableSizeSelector value={tableSize} onChange={changeTableSize} />
+          <Tabs
+            value={position}
+            onChange={changePosition}
+            options={rfiPositions.map((p) => ({ value: p, label: RFI_CONFIG[p].label }))}
+          />
+        </div>
         <span className="font-mono text-xs text-ink-muted">
           {session.points} pts &middot; {session.total} hands
         </span>

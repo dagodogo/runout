@@ -1,21 +1,22 @@
 import { useCallback, useMemo, useState } from 'react';
 import { HAND_GRID, type HandCell } from '@/lib/poker/hands';
-import { getMix, type Position } from '@/lib/poker/ranges';
+import { getMix, type Position, type RfiPosition } from '@/lib/poker/ranges';
 import { RangeCell } from './RangeCell';
 import { Card } from '@/components/ui/Card';
 
 interface RangeGridProps {
   position: Position;
+  openerPosition?: RfiPosition;
   onCellClick?: (hand: HandCell) => void;
   highlightHand?: string;
 }
 
-export function RangeGrid({ position, onCellClick, highlightHand }: RangeGridProps) {
+export function RangeGrid({ position, openerPosition, onCellClick, highlightHand }: RangeGridProps) {
   const [hovered, setHovered] = useState<HandCell | null>(null);
 
   const mixes = useMemo(() => {
-    return HAND_GRID.map((row) => row.map((hand) => getMix(position, hand)));
-  }, [position]);
+    return HAND_GRID.map((row) => row.map((hand) => getMix(position, hand, openerPosition)));
+  }, [position, openerPosition]);
 
   const handleHover = useCallback((hand: HandCell | null) => setHovered(hand), []);
 
@@ -38,7 +39,7 @@ export function RangeGrid({ position, onCellClick, highlightHand }: RangeGridPro
 
       <Card className="w-full p-5 lg:w-64 lg:shrink-0">
         {hovered ? (
-          <HandDetail hand={hovered} mix={getMix(position, hovered)} />
+          <HandDetail hand={hovered} mix={getMix(position, hovered, openerPosition)} />
         ) : (
           <p className="text-sm text-ink-muted">
             Hover any hand to see its exact action mix at this position. Solid colors are

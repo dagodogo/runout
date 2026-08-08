@@ -2,14 +2,17 @@ import { useCallback, useState } from 'react';
 import { generateScenario, type GeneratedScenario } from '@/lib/poker/scenarioGenerator';
 import { cardDisplay } from '@/lib/poker/cards';
 import { LEAK_CATEGORY_LABEL } from '@/lib/poker/scenarios';
+import type { TableSize } from '@/lib/poker/ranges';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { PokerTable } from './PokerTable';
+import { TableSizeSelector } from './TableSizeSelector';
 import { useProfileStore } from '@/lib/store/profile';
 import { cn } from '@/lib/cn';
 
 export function PostflopScenarioTrainer() {
-  const [scenario, setScenario] = useState<GeneratedScenario>(() => generateScenario());
+  const [tableSize, setTableSize] = useState<TableSize>(6);
+  const [scenario, setScenario] = useState<GeneratedScenario>(() => generateScenario(6));
   const [chosenId, setChosenId] = useState<string | null>(null);
   const [session, setSession] = useState({ correct: 0, total: 0 });
   const recordPostflop = useProfileStore((s) => s.recordPostflop);
@@ -26,7 +29,13 @@ export function PostflopScenarioTrainer() {
   );
 
   const nextScenario = useCallback(() => {
-    setScenario(generateScenario());
+    setScenario(generateScenario(tableSize));
+    setChosenId(null);
+  }, [tableSize]);
+
+  const changeTableSize = useCallback((size: TableSize) => {
+    setTableSize(size);
+    setScenario(generateScenario(size));
     setChosenId(null);
   }, []);
 
@@ -37,21 +46,24 @@ export function PostflopScenarioTrainer() {
 
   return (
     <Card className="mx-auto w-full max-w-3xl p-6 sm:p-8">
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-ink-muted">
-        <div className="flex items-center gap-2">
-          <Badge tone="violet">{scenario.street.toUpperCase()}</Badge>
-          <Badge tone="neutral">{LEAK_CATEGORY_LABEL[scenario.category]}</Badge>
-          {scenario.isHeroAggressor && <Badge tone="gold">You raised preflop</Badge>}
-        </div>
-        <span className="font-mono">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <TableSizeSelector value={tableSize} onChange={changeTableSize} />
+        <span className="font-mono text-xs text-ink-muted">
           {session.correct}/{session.total} correct
         </span>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-ink-muted">
+        <Badge tone="violet">{scenario.street.toUpperCase()}</Badge>
+        <Badge tone="neutral">{LEAK_CATEGORY_LABEL[scenario.category]}</Badge>
+        {scenario.isHeroAggressor && <Badge tone="gold">You raised preflop</Badge>}
       </div>
 
       <div className="mt-5">
         <PokerTable
           heroPosition={scenario.heroPosition}
           heroCards={heroCardStrings}
+          tableSize={scenario.tableSize}
           villainPosition={scenario.villainPosition}
           board={boardStrings}
           potBb={scenario.potBb}

@@ -31,7 +31,7 @@ export function PositionAccuracyChart({ data }: { data: Datum[] }) {
           No preflop reps yet.
         </div>
       ) : (
-        <div className="mt-4 h-56">
+        <div className="mt-4" style={{ height: Math.max(224, data.length * 30) }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} layout="vertical" margin={{ top: 0, right: 16, bottom: 0, left: 0 }}>
               <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" horizontal={false} />
@@ -45,11 +45,11 @@ export function PositionAccuracyChart({ data }: { data: Datum[] }) {
               <YAxis
                 type="category"
                 dataKey="position"
-                tickFormatter={(v: string) => positionLabel(v as Position).split(' ')[0]}
+                tickFormatter={(v: string) => positionLabel(v as Position)}
                 tick={{ fill: 'var(--color-ink-muted)', fontSize: 12 }}
                 axisLine={false}
                 tickLine={false}
-                width={44}
+                width={52}
               />
               <Tooltip content={<ChartTooltip />} cursor={{ fill: 'var(--color-surface-2)' }} />
               <Bar dataKey="accuracy" radius={[0, 4, 4, 0]} maxBarSize={18}>

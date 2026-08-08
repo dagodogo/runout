@@ -1,34 +1,47 @@
 import { useMemo } from 'react';
 import { PlayingCard } from './PlayingCard';
+import { positionsForSize, positionLabel, type Position, type TableSize } from '@/lib/poker/ranges';
 import { cn } from '@/lib/cn';
 
-const TABLE_ORDER = ['UTG', 'MP', 'CO', 'BTN', 'SB', 'BB'] as const;
-type TablePosition = (typeof TABLE_ORDER)[number];
+const CX = 50;
+const CY = 47;
+const RX = 44;
+const RY = 36;
 
-// Six seats around the ellipse, hero always at the bottom (seat 0).
-const SEAT_STYLE: { left: string; top: string }[] = [
-  { left: '50%', top: '83%' }, // hero
-  { left: '90%', top: '70%' },
-  { left: '90%', top: '26%' },
-  { left: '50%', top: '11%' },
-  { left: '10%', top: '26%' },
-  { left: '10%', top: '70%' },
-];
+/** Seats placed around an ellipse by angle, t=0 at bottom-center (hero) and
+ * increasing clockwise on screen — works for any table size. */
+function seatStyle(index: number, count: number): { left: string; top: string } {
+  const t = (index / count) * Math.PI * 2;
+  const left = CX + RX * Math.sin(t);
+  const top = CY + RY * Math.cos(t);
+  return { left: `${left}%`, top: `${top}%` };
+}
 
 interface PokerTableProps {
-  heroPosition: TablePosition;
+  heroPosition: Position;
   heroCards: string[];
-  villainPosition?: TablePosition;
+  tableSize?: TableSize;
+  villainPosition?: Position;
   board?: string[];
   potBb?: number;
   className?: string;
 }
 
-export function PokerTable({ heroPosition, heroCards, villainPosition, board, potBb, className }: PokerTableProps) {
+export function PokerTable({
+  heroPosition,
+  heroCards,
+  tableSize = 6,
+  villainPosition,
+  board,
+  potBb,
+  className,
+}: PokerTableProps) {
   const seatPositions = useMemo(() => {
-    const heroIdx = TABLE_ORDER.indexOf(heroPosition);
-    return Array.from({ length: 6 }, (_, i) => TABLE_ORDER[(heroIdx + i) % 6]);
-  }, [heroPosition]);
+    const order = positionsForSize(tableSize);
+    const heroIdx = order.indexOf(heroPosition);
+    const start = heroIdx === -1 ? 0 : heroIdx;
+    return Array.from({ length: order.length }, (_, i) => order[(start + i) % order.length]);
+  }, [heroPosition, tableSize]);
 
   return (
     <div className={cn('relative mx-auto aspect-[16/13] w-full max-w-xl pb-14 pt-4', className)}>
@@ -62,7 +75,7 @@ export function PokerTable({ heroPosition, heroCards, villainPosition, board, po
       {seatPositions.map((pos, seatIdx) => {
         const isHero = pos === heroPosition;
         const isVillain = pos === villainPosition;
-        const style = SEAT_STYLE[seatIdx];
+        const style = seatStyle(seatIdx, seatPositions.length);
         return (
           <div
             key={pos}
@@ -83,7 +96,7 @@ export function PokerTable({ heroPosition, heroCards, villainPosition, board, po
             )}
             <span
               className={cn(
-                'rounded-full border px-2 py-0.5 font-mono text-[10px] font-semibold',
+                'whitespace-nowrap rounded-full border px-2 py-0.5 font-mono text-[10px] font-semibold',
                 isHero
                   ? 'border-gold bg-gold/15 text-gold'
                   : isVillain
@@ -91,7 +104,7 @@ export function PokerTable({ heroPosition, heroCards, villainPosition, board, po
                     : 'border-border-strong bg-surface text-ink-faint',
               )}
             >
-              {pos}
+              {positionLabel(pos)}
               {isHero ? ' · YOU' : ''}
               {pos === 'BTN' && (
                 <span className="ml-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-ink text-[8px] font-bold text-base">
