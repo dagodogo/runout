@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Backgrounds — near-black navy layers, OLED-friendly */
+  --color-base: #0a0e16;
+  --color-surface: #121826;
+  --color-surface-2: #1a2233;
+  --color-surface-3: #232c40;
+  --color-border: #2a3446;
+  --color-border-strong: #3a4660;
+
+  /* Text */
+  --color-ink: #f4f7fb;
+  --color-ink-muted: #a9b4c8;
+  --color-ink-faint: #6b7688;
+
+  /* Brand */
+  --color-gold: #f0b429;
+  --color-gold-soft: #fbd88a;
+  --color-violet: #7c5cfc;
+  --color-violet-soft: #a996ff;
+
+  /* Semantic action colors (range trainer) */
+  --color-raise: #e8590c;
+  --color-raise-soft: #ff8a4c;
+  --color-call: #16a34a;
+  --color-call-soft: #4ade80;
+  --color-fold: #64748b;
+  --color-fold-soft: #94a3b8;
+  --color-mixed: #7c5cfc;
+
+  /* Feedback */
+  --color-success: #22c55e;
+  --color-error: #f43f5e;
+  --color-warning: #f0b429;
+
+  /* Fonts */
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --shadow-glow-gold: 0 0 24px rgba(240, 180, 41, 0.25);
+  --shadow-glow-violet: 0 0 24px rgba(124, 92, 252, 0.25);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-base);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-base);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
