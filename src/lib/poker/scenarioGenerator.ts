@@ -29,6 +29,7 @@ export interface GeneratedScenario {
   heroCards: [Card, Card];
   potBb: number;
   effectiveStackBb: number;
+  facingBetBb: number | null;
   facing: string;
   handCategoryLabel: string;
   equityPct: number;
@@ -256,6 +257,7 @@ export function generateScenario(tableSize: TableSize = 6): GeneratedScenario {
 
   let options: ScenarioOption[];
   let facing: string;
+  let facingBetBb: number | null = null;
 
   if (mode === 'checked') {
     const betSmall = Math.max(1, Math.round(potBb * 0.33));
@@ -278,6 +280,7 @@ export function generateScenario(tableSize: TableSize = 6): GeneratedScenario {
       { id: 'raise', label: `Raise to ${raiseTo}bb`, ev: evOfBet(equityForBet(raiseTo), potBb + villainBet, raiseTo, feRaise) },
     ];
     facing = `Villain bets ${villainBet}bb into ${potBb}bb`;
+    facingBetBb = villainBet;
   }
 
   const bestOptionId = options.reduce((best, o) => (o.ev > best.ev ? o : best), options[0]).id;
@@ -300,6 +303,7 @@ export function generateScenario(tableSize: TableSize = 6): GeneratedScenario {
     heroCards,
     potBb,
     effectiveStackBb,
+    facingBetBb,
     facing,
     handCategoryLabel: catLabel,
     equityPct: Math.round(equity * 1000) / 10,

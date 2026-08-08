@@ -6,6 +6,7 @@ import { tierForXp } from '@/lib/poker/tiers';
 import { cn } from '@/lib/cn';
 
 const LINKS = [
+  { to: '/play', label: 'Play' },
   { to: '/train/preflop', label: 'Preflop' },
   { to: '/train/postflop', label: 'Postflop' },
   { to: '/train/gto', label: 'GTO' },
@@ -47,7 +48,7 @@ export function NavBar() {
             Lv.{tier.level} {tier.name}
           </Badge>
           <NavLink
-            to="/train/preflop"
+            to="/play"
             className="inline-flex h-9 cursor-pointer items-center justify-center rounded-lg bg-gold px-3.5 text-sm font-semibold text-base transition-colors duration-200 hover:bg-gold-soft"
           >
             Launch App

@@ -7,6 +7,7 @@ import { combosForHand } from '@/lib/poker/equity';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { PokerTable } from './PokerTable';
+import { ConceptCallout } from './ConceptCallout';
 import { useProfileStore } from '@/lib/store/profile';
 import { cn } from '@/lib/cn';
 
@@ -17,6 +18,7 @@ interface Round {
 }
 
 const ACTION_LABEL: Record<Action, string> = { raise: 'Raise', call: 'Call', fold: 'Fold' };
+const OPEN_SIZE_BB = 2.5;
 
 function pctText(v: number) {
   return `${Math.round(v * 100)}%`;
@@ -48,6 +50,11 @@ export function PreflopQuiz({ position, tableSize = 6, openerPosition = 'BTN' }:
   const explanation = useMemo(
     () => explainPreflopDecision(position, round.hand, dominant, mix),
     [position, round.hand, dominant, mix],
+  );
+
+  const betBySeat = useMemo(
+    () => (position === 'BB' ? { [openerPosition]: OPEN_SIZE_BB } : undefined),
+    [position, openerPosition],
   );
 
   const handleAnswer = useCallback(
@@ -84,6 +91,8 @@ export function PreflopQuiz({ position, tableSize = 6, openerPosition = 'BTN' }:
           heroCards={round.cards}
           tableSize={tableSize}
           villainPosition={position === 'BB' ? openerPosition : undefined}
+          potBb={position === 'BB' ? OPEN_SIZE_BB + 1.5 : undefined}
+          betBySeat={betBySeat}
         />
       </div>
 
@@ -136,7 +145,13 @@ export function PreflopQuiz({ position, tableSize = 6, openerPosition = 'BTN' }:
             {mix.call > 0.005 && <span>Call {pctText(mix.call)}</span>}
             <span>Fold {pctText(mix.fold)}</span>
           </div>
-          <p className="text-sm text-ink-muted">{explanation}</p>
+          <ConceptCallout
+            concept={position === 'BB' ? 'Big blind defense' : 'Opening range'}
+            title={`${ACTION_LABEL[dominant]} is the solver-flavored play`}
+            tone={round.answered === dominant ? 'success' : 'error'}
+          >
+            {explanation}
+          </ConceptCallout>
           <button
             type="button"
             onClick={nextHand}

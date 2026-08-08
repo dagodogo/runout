@@ -1,12 +1,13 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { generateScenario, type GeneratedScenario } from '@/lib/poker/scenarioGenerator';
 import { cardDisplay } from '@/lib/poker/cards';
 import { LEAK_CATEGORY_LABEL } from '@/lib/poker/scenarios';
-import type { TableSize } from '@/lib/poker/ranges';
+import type { Position, TableSize } from '@/lib/poker/ranges';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { PokerTable } from './PokerTable';
 import { TableSizeSelector } from './TableSizeSelector';
+import { ConceptCallout } from './ConceptCallout';
 import { useProfileStore } from '@/lib/store/profile';
 import { cn } from '@/lib/cn';
 
@@ -44,6 +45,11 @@ export function PostflopScenarioTrainer() {
   const heroCardStrings = scenario.heroCards.map(cardDisplay);
   const boardStrings = scenario.board.map(cardDisplay);
 
+  const betBySeat = useMemo(() => {
+    if (scenario.mode !== 'facing-bet' || !scenario.facingBetBb) return undefined;
+    return { [scenario.villainPosition]: scenario.facingBetBb } as Partial<Record<Position, number>>;
+  }, [scenario]);
+
   return (
     <Card className="mx-auto w-full max-w-3xl p-6 sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -67,19 +73,29 @@ export function PostflopScenarioTrainer() {
           villainPosition={scenario.villainPosition}
           board={boardStrings}
           potBb={scenario.potBb}
+          betBySeat={betBySeat}
         />
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-center text-sm">
-        <span className="text-ink-muted">{scenario.facing}</span>
-        <span className="text-ink-faint">&middot;</span>
-        <span className="font-semibold text-ink">{scenario.handCategoryLabel}</span>
-        <span className="text-ink-faint">&middot;</span>
-        <span className="font-mono text-gold">{scenario.equityPct}% equity</span>
+      <div className="mt-4 text-center text-sm text-ink-muted">{scenario.facing}</div>
+      <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+        <div className="rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-center">
+          <div className="text-[9px] uppercase tracking-wide text-ink-faint">Hand</div>
+          <div className="text-xs font-semibold text-ink">{scenario.handCategoryLabel}</div>
+        </div>
+        <div className="rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-center">
+          <div className="text-[9px] uppercase tracking-wide text-ink-faint">Equity</div>
+          <div className="font-mono text-xs font-semibold text-gold">{scenario.equityPct}%</div>
+        </div>
+        <div className="rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-center">
+          <div className="text-[9px] uppercase tracking-wide text-ink-faint">Board</div>
+          <div className="text-xs font-semibold text-ink">{scenario.texture.summary}</div>
+        </div>
+        <div className="rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-center">
+          <div className="text-[9px] uppercase tracking-wide text-ink-faint">Eff. stack</div>
+          <div className="font-mono text-xs font-semibold text-ink">{scenario.effectiveStackBb}bb</div>
+        </div>
       </div>
-      <p className="mt-1 text-center text-xs text-ink-faint">
-        Board: {scenario.texture.summary} &middot; Eff. stack {scenario.effectiveStackBb}bb
-      </p>
 
       <div
         className="mt-6 grid gap-3"
@@ -134,7 +150,13 @@ export function PostflopScenarioTrainer() {
               );
             })}
           </div>
-          <p className="text-sm text-ink-muted">{scenario.explanation}</p>
+          <ConceptCallout
+            concept={LEAK_CATEGORY_LABEL[scenario.category]}
+            title={`Best play: ${bestOption.label}`}
+            tone={chosenId === scenario.bestOptionId ? 'success' : 'error'}
+          >
+            {scenario.explanation}
+          </ConceptCallout>
           <button
             type="button"
             onClick={nextScenario}

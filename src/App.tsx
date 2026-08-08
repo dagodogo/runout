@@ -11,6 +11,7 @@ const PostflopTrainerPage = lazy(() =>
   import('./pages/PostflopTrainerPage').then((m) => ({ default: m.PostflopTrainerPage })),
 );
 const GtoTrainerPage = lazy(() => import('./pages/GtoTrainerPage').then((m) => ({ default: m.GtoTrainerPage })));
+const PlayHandPage = lazy(() => import('./pages/PlayHandPage').then((m) => ({ default: m.PlayHandPage })));
 const DashboardPage = lazy(() => import('./pages/DashboardPage').then((m) => ({ default: m.DashboardPage })));
 const LearnHubPage = lazy(() => import('./pages/LearnHubPage').then((m) => ({ default: m.LearnHubPage })));
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="/train/preflop" element={<PreflopTrainerPage />} />
           <Route path="/train/postflop" element={<PostflopTrainerPage />} />
           <Route path="/train/gto" element={<GtoTrainerPage />} />
+          <Route path="/play" element={<PlayHandPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/learn" element={<LearnHubPage />} />
         </Routes>

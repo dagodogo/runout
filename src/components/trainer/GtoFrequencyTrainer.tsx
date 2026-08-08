@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Tabs } from '@/components/ui/Tabs';
 import { TableSizeSelector } from './TableSizeSelector';
+import { ConceptCallout } from './ConceptCallout';
 import { useProfileStore } from '@/lib/store/profile';
 import { cn } from '@/lib/cn';
 
@@ -128,11 +129,13 @@ export function GtoFrequencyTrainer() {
             <div style={{ width: `${actualPct}%`, background: 'var(--color-raise)' }} />
             <div style={{ width: `${100 - actualPct}%`, background: 'var(--color-fold)' }} />
           </div>
-          <p className="text-sm text-ink-muted">
-            Hands near a position's threshold aren't played 100/0 — mixing frequencies keeps opponents
-            from exploiting the exact cutoff. This hand sits right in {RFI_CONFIG[position].label}'s blend
-            zone.
-          </p>
+          <ConceptCallout
+            concept="Mixed strategies"
+            title={`Actual raise frequency: ${actualPct}%`}
+            tone={grade === 'off' ? 'error' : 'success'}
+          >
+            {`Hands near a position's threshold aren't played 100/0 — mixing frequencies keeps opponents from exploiting the exact cutoff. This hand sits right in ${RFI_CONFIG[position].label}'s blend zone.`}
+          </ConceptCallout>
           <button
             type="button"
             onClick={nextHand}
