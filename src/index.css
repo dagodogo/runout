@@ -2,46 +2,47 @@
 @import "tailwindcss";
 
 @theme {
-  /* Backgrounds — near-black navy layers, OLED-friendly */
-  --color-base: #0a0e16;
-  --color-surface: #121826;
-  --color-surface-2: #1a2233;
-  --color-surface-3: #232c40;
-  --color-border: #2a3446;
-  --color-border-strong: #3a4660;
+  /* Backgrounds — true neutral black layers, no color tint */
+  --color-base: #0a0a0a;
+  --color-surface: #131313;
+  --color-surface-2: #1c1c1c;
+  --color-surface-3: #262626;
+  --color-border: #2b2b2b;
+  --color-border-strong: #404040;
 
   /* Text */
-  --color-ink: #f4f7fb;
-  --color-ink-muted: #a9b4c8;
-  --color-ink-faint: #6b7688;
+  --color-ink: #fafafa;
+  --color-ink-muted: #a3a3a3;
+  --color-ink-faint: #6b6b6b;
 
-  /* Brand */
-  --color-gold: #f0b429;
-  --color-gold-soft: #fbd88a;
-  --color-violet: #7c5cfc;
-  --color-violet-soft: #a996ff;
+  /* Brand — red is the single accent, everything else is black/white/gray */
+  --color-gold: #dc2626;
+  --color-gold-soft: #ef4444;
+  --color-violet: #d4d4d4;
+  --color-violet-soft: #f5f5f5;
 
-  /* Semantic action colors (range trainer) */
-  --color-raise: #e8590c;
-  --color-raise-soft: #ff8a4c;
-  --color-call: #16a34a;
-  --color-call-soft: #4ade80;
-  --color-fold: #64748b;
-  --color-fold-soft: #94a3b8;
-  --color-mixed: #7c5cfc;
+  /* Semantic action colors (range trainer) — an intensity gradient from
+     bold red (raise) through white (call) to receding dark gray (fold) */
+  --color-raise: #dc2626;
+  --color-raise-soft: #f87171;
+  --color-call: #f5f5f5;
+  --color-call-soft: #ffffff;
+  --color-fold: #404040;
+  --color-fold-soft: #737373;
+  --color-mixed: #a3a3a3;
 
   /* Feedback */
-  --color-success: #22c55e;
-  --color-error: #f43f5e;
-  --color-warning: #f0b429;
+  --color-success: #f5f5f5;
+  --color-error: #dc2626;
+  --color-warning: #dc2626;
 
   /* Fonts */
   --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  --shadow-glow-gold: 0 0 24px rgba(240, 180, 41, 0.25);
-  --shadow-glow-violet: 0 0 24px rgba(124, 92, 252, 0.25);
+  --shadow-glow-gold: 0 0 24px rgba(220, 38, 38, 0.3);
+  --shadow-glow-violet: 0 0 24px rgba(255, 255, 255, 0.12);
 }
 
 @layer base {

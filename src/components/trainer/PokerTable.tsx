@@ -49,9 +49,9 @@ export function PokerTable({
       <div className="absolute inset-[6%] rounded-[50%] border-[10px] border-surface-3 shadow-2xl" />
       {/* felt */}
       <div
-        className="absolute inset-[8%] rounded-[50%] border border-gold/20"
+        className="absolute inset-[8%] rounded-[50%] border border-gold/25"
         style={{
-          background: 'radial-gradient(ellipse at 50% 40%, #16261f 0%, #0d1712 65%, #0a120d 100%)',
+          background: 'radial-gradient(ellipse at 50% 40%, #1a1a1a 0%, #101010 65%, #060606 100%)',
         }}
       />
 
