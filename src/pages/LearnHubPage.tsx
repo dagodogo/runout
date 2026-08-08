@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { PageShell } from '@/components/layout/PageShell';
 import { OddsCalculator } from '@/components/learn/OddsCalculator';
 import { GlossaryList } from '@/components/learn/GlossaryList';
+import { StrategyLibrary } from '@/components/learn/StrategyLibrary';
+import { PlayerTells } from '@/components/learn/PlayerTells';
 import { PositionSelector } from '@/components/trainer/PositionSelector';
 import { RangeGrid } from '@/components/trainer/RangeGrid';
 import type { Position } from '@/lib/poker/ranges';
@@ -14,12 +16,17 @@ export function LearnHubPage() {
       <div>
         <h1 className="font-display text-3xl font-semibold text-ink sm:text-4xl">Learn Hub</h1>
         <p className="mt-2 max-w-2xl text-ink-muted">
-          Free reference material — no login required. Calculate odds, look up terms, or print a
-          range chart to keep next to your monitor.
+          Free reference material — no login required. Calculate odds, study the strategy behind the
+          trainers, look up terms, or print a range chart to keep next to your monitor.
         </p>
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <StrategyLibrary />
+        <PlayerTells />
+      </div>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <OddsCalculator />
         <GlossaryList />
       </div>

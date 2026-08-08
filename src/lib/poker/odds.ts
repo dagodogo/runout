@@ -40,6 +40,26 @@ function gcd(a: number, b: number): number {
   return a;
 }
 
+/** EV of calling a bet: equity * (pot after call) - (1-equity) * call cost. */
+export function evOfCall(equity: number, potBeforeCall: number, callAmount: number): number {
+  const winAmount = potBeforeCall + callAmount;
+  return equity * winAmount - (1 - equity) * callAmount;
+}
+
+/** EV of betting/raising, combining fold equity with showdown equity when called:
+ * EV = P(fold)*potBeforeBet + P(called)*(equity*potIfCalled - (1-equity)*betSize).
+ * `equity` should reflect equity against villain's continuing (non-folded) range. */
+export function evOfBet(
+  equity: number,
+  potBeforeBet: number,
+  betSize: number,
+  foldEquity: number,
+): number {
+  const potIfCalled = potBeforeBet + betSize * 2;
+  const calledEv = equity * potIfCalled - (1 - equity) * betSize;
+  return foldEquity * potBeforeBet + (1 - foldEquity) * calledEv;
+}
+
 export const COMMON_OUTS = [
   { name: 'Gutshot straight draw', outs: 4 },
   { name: 'Open-ended straight draw', outs: 8 },

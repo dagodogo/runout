@@ -1,13 +1,18 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { weightedRandomHand, type HandCell } from '@/lib/poker/hands';
 import { getMix, positionDescription, type Action, type Position } from '@/lib/poker/ranges';
+import { explainPreflopDecision } from '@/lib/poker/preflopExplain';
+import { freshDeck, cardDisplay } from '@/lib/poker/cards';
+import { combosForHand } from '@/lib/poker/equity';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { PokerTable } from './PokerTable';
 import { useProfileStore } from '@/lib/store/profile';
 import { cn } from '@/lib/cn';
 
 interface Round {
   hand: HandCell;
+  cards: [string, string];
   answered: Action | null;
 }
 
@@ -17,8 +22,15 @@ function pctText(v: number) {
   return `${Math.round(v * 100)}%`;
 }
 
+function dealRound(excludeLabel?: string): Round {
+  const hand = weightedRandomHand(excludeLabel);
+  const combos = combosForHand(hand, freshDeck());
+  const [c1, c2] = combos[Math.floor(Math.random() * combos.length)];
+  return { hand, cards: [cardDisplay(c1), cardDisplay(c2)], answered: null };
+}
+
 export function PreflopQuiz({ position }: { position: Position }) {
-  const [round, setRound] = useState<Round>(() => ({ hand: weightedRandomHand(), answered: null }));
+  const [round, setRound] = useState<Round>(() => dealRound());
   const [session, setSession] = useState({ correct: 0, total: 0, streak: 0 });
   const recordPreflop = useProfileStore((s) => s.recordPreflop);
 
@@ -26,6 +38,11 @@ export function PreflopQuiz({ position }: { position: Position }) {
   const dominant: Action = mix.raise >= mix.call && mix.raise >= mix.fold ? 'raise' : mix.call >= mix.fold ? 'call' : 'fold';
 
   const actions: Action[] = position === 'BB' ? ['raise', 'call', 'fold'] : ['raise', 'fold'];
+
+  const explanation = useMemo(
+    () => explainPreflopDecision(position, round.hand, dominant, mix),
+    [position, round.hand, dominant, mix],
+  );
 
   const handleAnswer = useCallback(
     (action: Action) => {
@@ -43,11 +60,11 @@ export function PreflopQuiz({ position }: { position: Position }) {
   );
 
   const nextHand = useCallback(() => {
-    setRound({ hand: weightedRandomHand(round.hand.label), answered: null });
+    setRound(dealRound(round.hand.label));
   }, [round.hand.label]);
 
   return (
-    <Card className="mx-auto w-full max-w-xl p-8">
+    <Card className="mx-auto w-full max-w-xl p-6 sm:p-8">
       <div className="flex items-center justify-between text-xs text-ink-muted">
         <span>{positionDescription(position)}</span>
         <span className="font-mono">
@@ -55,12 +72,17 @@ export function PreflopQuiz({ position }: { position: Position }) {
         </span>
       </div>
 
-      <div className="mt-8 text-center">
-        <div className="font-mono text-6xl font-bold text-ink">{round.hand.label}</div>
-        <p className="mt-3 text-sm text-ink-muted">What's the play?</p>
+      <div className="mt-5">
+        <PokerTable heroPosition={position} heroCards={round.cards} />
       </div>
 
-      <div className={cn('mt-8 grid gap-3', actions.length === 3 ? 'grid-cols-3' : 'grid-cols-2')}>
+      <div className="mt-6 text-center">
+        <p className="text-sm text-ink-muted">
+          What's the play with <span className="font-mono font-semibold text-ink">{round.hand.label}</span>?
+        </p>
+      </div>
+
+      <div className={cn('mt-6 grid gap-3', actions.length === 3 ? 'grid-cols-3' : 'grid-cols-2')}>
         {actions.map((action) => (
           <button
             key={action}
@@ -103,6 +125,7 @@ export function PreflopQuiz({ position }: { position: Position }) {
             {mix.call > 0.005 && <span>Call {pctText(mix.call)}</span>}
             <span>Fold {pctText(mix.fold)}</span>
           </div>
+          <p className="text-sm text-ink-muted">{explanation}</p>
           <button
             type="button"
             onClick={nextHand}

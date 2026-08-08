@@ -5,9 +5,10 @@ import { TierProgress } from '@/components/dashboard/TierProgress';
 import { LeakFinderCard } from '@/components/dashboard/LeakFinderCard';
 import { AccuracyTrendChart } from '@/components/dashboard/AccuracyTrendChart';
 import { PositionAccuracyChart } from '@/components/dashboard/PositionAccuracyChart';
+import { HistoryList } from '@/components/dashboard/HistoryList';
 import { useProfileStore } from '@/lib/store/profile';
 import { topLeaks, overallAccuracy } from '@/lib/poker/leaks';
-import { accuracyTrend, positionAccuracy } from '@/lib/poker/stats';
+import { accuracyTrend, positionAccuracy, bestStreak, recentHistory } from '@/lib/poker/stats';
 
 export function DashboardPage() {
   const xp = useProfileStore((s) => s.xp);
@@ -21,6 +22,8 @@ export function DashboardPage() {
   const leaks = useMemo(() => topLeaks(preflopAttempts, postflopAttempts), [preflopAttempts, postflopAttempts]);
   const trend = useMemo(() => accuracyTrend(preflopAttempts, postflopAttempts), [preflopAttempts, postflopAttempts]);
   const posAccuracy = useMemo(() => positionAccuracy(preflopAttempts), [preflopAttempts]);
+  const streak = useMemo(() => bestStreak(preflopAttempts, postflopAttempts), [preflopAttempts, postflopAttempts]);
+  const history = useMemo(() => recentHistory(preflopAttempts, postflopAttempts), [preflopAttempts, postflopAttempts]);
 
   return (
     <PageShell>
@@ -48,11 +51,12 @@ export function DashboardPage() {
         )}
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <StatTile label="Total XP" value={xp.toLocaleString()} tone="gold" />
         <StatTile label="Overall accuracy" value={`${Math.round(accuracy * 100)}%`} tone={accuracy >= 0.6 ? 'success' : 'error'} />
         <StatTile label="Hands drilled" value={totalReps.toLocaleString()} />
         <StatTile label="Postflop reps" value={postflopAttempts.length.toLocaleString()} />
+        <StatTile label="Best streak" value={streak.toLocaleString()} tone="violet" />
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
@@ -63,6 +67,10 @@ export function DashboardPage() {
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <AccuracyTrendChart data={trend} />
         <PositionAccuracyChart data={posAccuracy} />
+      </div>
+
+      <div className="mt-6">
+        <HistoryList entries={history} />
       </div>
     </PageShell>
   );

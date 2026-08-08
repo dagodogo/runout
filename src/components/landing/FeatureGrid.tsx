@@ -28,7 +28,7 @@ const FEATURES: Feature[] = [
   {
     icon: Layers,
     title: 'Postflop Scenario Trainer',
-    description: 'Realistic flop, turn, and river spots — compare every line\'s EV, not just win or lose.',
+    description: 'Every hand is freshly dealt and scored by a real 7-card equity engine — thousands of boards, not a fixed quiz bank.',
     tone: 'violet',
   },
   {
@@ -51,14 +51,14 @@ const FEATURES: Feature[] = [
   },
   {
     icon: Trophy,
-    title: '12 Skill Tiers',
-    description: 'Earn XP with every rep and climb from Limper to Runout Elite as your accuracy improves.',
+    title: 'Unlimited skill tiers',
+    description: 'Earn XP with every rep and climb from Limper toward Runout Elite — there\'s always another level.',
     tone: 'violet',
   },
   {
     icon: BookOpen,
     title: 'Learn Hub',
-    description: 'A free odds calculator, glossary, and printable range charts — no login required.',
+    description: 'A strategy library, player-reads reference, odds calculator, and printable charts — no login required.',
     tone: 'raise',
   },
   {

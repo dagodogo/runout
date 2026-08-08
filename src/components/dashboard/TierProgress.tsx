@@ -21,7 +21,7 @@ export function TierProgress({ xp }: { xp: number }) {
         <div className="h-full rounded-full bg-gold transition-[width] duration-500" style={{ width: `${progress * 100}%` }} />
       </div>
       <div className="mt-2 text-xs text-ink-muted">
-        {next ? `${next.minXp - xp} XP to Lv.${next.level} ${next.name}` : 'Max tier reached'}
+        {next.minXp - xp} XP to Lv.{next.level} {next.name}
       </div>
     </Card>
   );

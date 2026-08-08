@@ -5,7 +5,7 @@ import { cn } from '@/lib/cn';
 const FAQS = [
   {
     q: 'Is this real solver output?',
-    a: 'No. Ranges and frequencies are generated with a well-known hand-strength heuristic (the Chen Formula) tuned to approximate realistic 6-max frequencies. It\'s built for learning solid fundamentals, not for reproducing certified solver solutions.',
+    a: 'Not exactly, but it\'s not fake either. Preflop ranges are generated with a well-known hand-strength heuristic (the Chen Formula) tuned to realistic 6-max frequencies. Postflop, every hand runs through a real 7-card hand evaluator and a Monte Carlo equity simulation against a plausible opponent range — genuine computed odds, not scripted answers. It\'s built for learning solid fundamentals, not for reproducing certified solver output down to the decimal.',
   },
   {
     q: 'Do I need an account?',

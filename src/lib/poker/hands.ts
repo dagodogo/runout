@@ -66,14 +66,8 @@ export function buildGrid(): HandCell[][] {
 export const HAND_GRID = buildGrid();
 export const ALL_HANDS = HAND_GRID.flat();
 
-export const TOTAL_COMBOS = ALL_HANDS.reduce((sum, h) => sum + h.combos, 0); // 1326
-
 export function scoreOf(hand: HandCell): number {
   return chenScore(hand.high, hand.low, hand.kind === 'suited');
-}
-
-export function randomHand(): HandCell {
-  return ALL_HANDS[Math.floor(Math.random() * ALL_HANDS.length)];
 }
 
 /** Weighted by real-world combo frequency (offsuit hands are 3x more common than

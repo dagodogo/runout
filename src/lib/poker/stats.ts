@@ -47,3 +47,49 @@ export function positionAccuracy(preflop: PreflopAttempt[]) {
     reps: b.total,
   }));
 }
+
+/** Longest run of consecutive correct answers, across both trainers in
+ * chronological order. */
+export function bestStreak(preflop: PreflopAttempt[], postflop: PostflopAttempt[]): number {
+  const all: Timestamped[] = [...preflop, ...postflop].sort((a, b) => a.timestamp - b.timestamp);
+  let best = 0;
+  let current = 0;
+  for (const a of all) {
+    current = a.correct ? current + 1 : 0;
+    if (current > best) best = current;
+  }
+  return best;
+}
+
+export interface HistoryEntry {
+  id: string;
+  timestamp: number;
+  correct: boolean;
+  label: string;
+  detail: string;
+  kind: 'preflop' | 'postflop';
+}
+
+export function recentHistory(
+  preflop: PreflopAttempt[],
+  postflop: PostflopAttempt[],
+  limit = 12,
+): HistoryEntry[] {
+  const pre: HistoryEntry[] = preflop.map((a) => ({
+    id: a.id,
+    timestamp: a.timestamp,
+    correct: a.correct,
+    label: a.hand,
+    detail: `Preflop · ${a.position}`,
+    kind: 'preflop',
+  }));
+  const post: HistoryEntry[] = postflop.map((a) => ({
+    id: a.id,
+    timestamp: a.timestamp,
+    correct: a.correct,
+    label: a.category,
+    detail: 'Postflop',
+    kind: 'postflop',
+  }));
+  return [...pre, ...post].sort((a, b) => b.timestamp - a.timestamp).slice(0, limit);
+}
