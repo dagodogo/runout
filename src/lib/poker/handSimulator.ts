@@ -1,10 +1,12 @@
 import { freshDeck, shuffled, type Card } from './cards';
-import { evaluateBest, compareHandScore, CATEGORY_NAME, type HandScore } from './evaluator';
+import { evaluateBest, compareHandScore, CATEGORY_NAME } from './evaluator';
 import { estimateEquity } from './equity';
 import { classifyBoard, detectDraws } from './boardTexture';
 import { evOfBet, evOfCall } from './odds';
 import { ALL_HANDS, RANKS, scoreOf, type HandCell } from './hands';
 import { positionsForSize, rfiMix, defendMix, type Position, type RfiPosition, type TableSize } from './ranges';
+import { handCategoryLabel, pickExplanation } from './scenarioGenerator';
+import { explainPreflopDecision } from './preflopExplain';
 
 export type SimStreet = 'preflop' | 'flop' | 'turn' | 'river' | 'showdown';
 export type SimAction = 'fold' | 'check' | 'call' | 'bet' | 'raise';
@@ -98,23 +100,6 @@ function activePlayers(sim: HandSim): SimPlayer[] {
 
 function getPlayer(sim: HandSim, pos: Position): SimPlayer {
   return sim.players.find((p) => p.position === pos)!;
-}
-
-function handCategoryLabel(score: HandScore, cards: Card[], board: Card[]): string {
-  if (score.category >= 2) return CATEGORY_NAME[score.category];
-  if (score.category === 1) {
-    const boardRanks = board.map((c) => c.rank).sort((a, b) => b - a);
-    const pairRank = score.tiebreak[0];
-    if (pairRank > boardRanks[0]) return 'Overpair';
-    if (pairRank === boardRanks[0]) return 'Top pair';
-    if (pairRank === boardRanks[boardRanks.length - 1]) return 'Bottom pair';
-    return 'Middle pair';
-  }
-  const draws = detectDraws(cards, board);
-  if (draws.comboDraw) return 'Combo draw';
-  if (draws.flushDraw) return 'Flush draw';
-  if (draws.straightDraw) return 'Straight draw';
-  return 'No pair, no draw';
 }
 
 /** Starts a fresh hand: deals every seat two cards, posts blinds, and runs
@@ -293,10 +278,7 @@ function buildFeedback(sim: HandSim, player: SimPlayer, chosen: { action: SimAct
       equityPct: Math.round(mix.raise * 1000) / 10,
       handLabel,
       concept: sim.openRaiserPosition === null ? 'Opening range' : 'Big blind defense',
-      explanation:
-        chosen.action === bestId
-          ? `${handLabel} is a solid ${bestId} here given the position and action so far.`
-          : `Solver-flavored strategy leans ${bestId} with ${handLabel} in this spot — worth another look at the range chart for ${player.position}.`,
+      explanation: explainPreflopDecision(player.position, hand, bestId, mix),
     };
   }
 
@@ -319,10 +301,14 @@ function buildFeedback(sim: HandSim, player: SimPlayer, chosen: { action: SimAct
   }
 
   const concept = facingBet ? 'Bluff-catching' : 'Continuation betting';
+  const isAggressor = sim.openRaiserPosition === player.position;
+  const draws = sim.street !== 'river' ? detectDraws(player.cards, sim.board) : { flushDraw: false, straightDraw: false, comboDraw: false };
+  const hasDraw = draws.flushDraw || draws.straightDraw || draws.comboDraw;
+  const line = pickExplanation(facingBet ? 'facing-bet' : 'checked', bestId, texture, isAggressor, score.category, hasDraw);
   const explanation =
     chosen.action === bestId
-      ? `With ${handLabel} and ${Math.round(equity * 100)}% equity on a ${texture.summary} board, ${bestId} is the solid play here.`
-      : `With ${handLabel} and ${Math.round(equity * 100)}% equity on a ${texture.summary} board, the stronger line was ${bestId} rather than ${chosen.action}.`;
+      ? `With ${handLabel} and ${Math.round(equity * 100)}% equity on a ${texture.summary} board, ${bestId} is the solid play here. ${line}`
+      : `With ${handLabel} and ${Math.round(equity * 100)}% equity on a ${texture.summary} board, the stronger line was ${bestId} rather than ${chosen.action}. ${line}`;
 
   return { chosenId: chosen.action, bestId, equityPct: Math.round(equity * 1000) / 10, handLabel, concept, explanation };
 }

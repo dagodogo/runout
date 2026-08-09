@@ -88,7 +88,7 @@ function rangeLabelsAbove(positionRaise: (h: (typeof ALL_HANDS)[number]) => numb
   return set;
 }
 
-function handCategoryLabel(score: { category: number; tiebreak: number[] }, heroCards: Card[], board: Card[]): string {
+export function handCategoryLabel(score: { category: number; tiebreak: number[] }, heroCards: Card[], board: Card[]): string {
   if (score.category >= 2) return CATEGORY_NAME[score.category];
   if (score.category === 1) {
     const boardRanks = board.map((c) => c.rank).sort((a, b) => b - a);
@@ -175,7 +175,7 @@ const RAISE_BLUFF_LINES = [
   'This is a bluff raise: the hand itself is weak, but the pressure it applies is worth more than checking it down would be.',
 ];
 
-function pickExplanation(
+export function pickExplanation(
   mode: FacingMode,
   bestOptionId: string,
   texture: BoardTexture,
