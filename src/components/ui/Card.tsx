@@ -12,11 +12,3 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
     />
   );
 }
-
-export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('p-6 pb-3', className)} {...props} />;
-}
-
-export function CardBody({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('px-6 pb-6', className)} {...props} />;
-}

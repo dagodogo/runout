@@ -32,6 +32,7 @@ export function LeakFinderCard({ leaks }: { leaks: LeakEntry[] }) {
                   }}
                 />
               </div>
+              <p className="mt-1.5 text-xs text-ink-faint">{leak.tip}</p>
             </div>
           ))}
         </div>

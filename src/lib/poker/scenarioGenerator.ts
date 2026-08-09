@@ -1,11 +1,11 @@
-import { freshDeck, removeCards, shuffled, cardDisplay, type Card } from './cards';
+import { freshDeck, removeCards, shuffled, type Card } from './cards';
 import { evaluateBest, CATEGORY_NAME } from './evaluator';
 import { estimateEquity, combosForHand } from './equity';
 import { classifyBoard, detectDraws, type BoardTexture } from './boardTexture';
 import { evOfBet, evOfCall } from './odds';
 import { ALL_HANDS } from './hands';
 import { defendersFor, defendMix, positionsForSize, rfiMix, type Position, type RfiPosition, type TableSize } from './ranges';
-import { LEAK_CATEGORY_LABEL, type LeakCategory } from './scenarios';
+import { type LeakCategory } from './scenarios';
 
 export type Street = 'flop' | 'turn' | 'river';
 export type FacingMode = 'checked' | 'facing-bet';
@@ -313,7 +313,3 @@ export function generateScenario(tableSize: TableSize = 6): GeneratedScenario {
     explanation,
   };
 }
-
-export { cardDisplay };
-export { LEAK_CATEGORY_LABEL };
-export type { LeakCategory };

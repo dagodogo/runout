@@ -1,4 +1,4 @@
-import { freshDeck, removeCards, shuffled, type Card } from './cards';
+import { freshDeck, shuffled, type Card } from './cards';
 import { evaluateBest, compareHandScore, CATEGORY_NAME, type HandScore } from './evaluator';
 import { estimateEquity } from './equity';
 import { classifyBoard, detectDraws } from './boardTexture';
@@ -446,14 +446,4 @@ export function applyHeroAction(sim: HandSim, chosen: { action: SimAction; amoun
   const feedback = buildFeedback(sim, heroPlayer, chosen);
   const applied = applyAction(sim, heroPlayer.position, chosen);
   return { ...applied, lastFeedback: feedback, heroTurn: false, heroOptions: [] };
-}
-
-/** Convenience wrapper for callers (tests, scripts) that want the fully
- * resolved next state in one step. */
-export function submitHeroAction(sim: HandSim, chosen: { action: SimAction; amount?: number }): HandSim {
-  return advance(applyHeroAction(sim, chosen));
-}
-
-export function removeUsed(deck: Card[], used: Card[]): Card[] {
-  return removeCards(deck, used);
 }
