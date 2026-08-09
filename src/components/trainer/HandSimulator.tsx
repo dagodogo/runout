@@ -16,6 +16,14 @@ const ACTION_VERB: Record<SimAction, string> = {
   raise: 'raises to',
 };
 
+const ACTION_TONE: Record<SimAction, string> = {
+  fold: 'border-fold/50 text-fold-soft hover:border-fold hover:bg-fold/10',
+  check: 'border-border-strong text-ink-muted hover:border-ink-muted hover:text-ink',
+  call: 'border-call/50 text-call-soft hover:border-call hover:bg-call/10',
+  bet: 'border-raise/50 text-raise-soft hover:border-raise hover:bg-raise/10',
+  raise: 'border-raise/50 text-raise-soft hover:border-raise hover:bg-raise/10',
+};
+
 const STREET_LABEL: Record<string, string> = { flop: 'FLOP', turn: 'TURN', river: 'RIVER', showdown: 'SHOWDOWN' };
 
 function formatLog(entry: LogEntry): string {
@@ -80,6 +88,9 @@ export function HandSimulator() {
     return m;
   }, [sim.players, sim.street]);
 
+  const toCall = Math.round((sim.currentBet - heroPlayer.committedStreet) * 10) / 10;
+  const potOddsPct = toCall > 0 ? Math.round((toCall / (sim.pot + toCall)) * 100) : null;
+
   return (
     <Card className="mx-auto w-full max-w-4xl p-6 sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -108,7 +119,14 @@ export function HandSimulator() {
 
           {sim.heroTurn && !showFeedback && (
             <div className="mt-2">
-              <p className="text-center text-sm text-ink-muted">Your turn — what's the play?</p>
+              <div className="flex items-center justify-center gap-2 text-center">
+                <p className="text-sm text-ink-muted">Your turn — what's the play?</p>
+                {potOddsPct !== null && (
+                  <span className="rounded-full border border-border bg-surface-2 px-2 py-0.5 font-mono text-[10px] text-ink-muted">
+                    To call {toCall}bb &middot; pot odds {potOddsPct}%
+                  </span>
+                )}
+              </div>
               <div
                 className="mt-4 grid gap-3"
                 style={{ gridTemplateColumns: `repeat(${sim.heroOptions.length}, minmax(0, 1fr))` }}
@@ -118,7 +136,10 @@ export function HandSimulator() {
                     key={`${opt.id}-${i}`}
                     type="button"
                     onClick={() => handleAction(opt)}
-                    className="cursor-pointer rounded-xl border border-border-strong py-4 text-sm font-semibold text-ink transition-colors duration-150 hover:border-gold hover:text-gold"
+                    className={cn(
+                      'cursor-pointer rounded-xl border py-4 text-sm font-semibold transition-colors duration-150',
+                      ACTION_TONE[opt.id],
+                    )}
                   >
                     {opt.label}
                   </button>
