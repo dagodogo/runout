@@ -118,7 +118,7 @@ export function PokerTable({
               {isHero ? (
                 <div className="flex gap-1">
                   {heroCards.map((c, i) => (
-                    <PlayingCard key={`${c}-${i}`} card={c} size="lg" />
+                    <PlayingCard key={`${c}-${i}`} card={c} size={heroCards.length > 2 ? 'lg-quad' : 'lg'} />
                   ))}
                 </div>
               ) : isFolded ? (

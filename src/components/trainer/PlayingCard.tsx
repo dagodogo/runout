@@ -3,7 +3,7 @@ import { cn } from '@/lib/cn';
 
 const RED_SUITS = new Set(['♥', '♦']);
 
-type Size = 'xs' | 'sm' | 'md' | 'lg';
+type Size = 'xs' | 'sm' | 'md' | 'lg' | 'lg-quad';
 
 const DIMS: Record<Size, string> = {
   xs: 'h-8 w-6 text-[10px] rounded',
@@ -12,12 +12,17 @@ const DIMS: Record<Size, string> = {
   // Mobile-first: fixed-pixel cards would overflow a fluid table container at
   // narrow widths, so the hero's cards scale up at each breakpoint instead.
   lg: 'h-14 w-10 text-base rounded-lg sm:h-20 sm:w-14 sm:text-xl sm:rounded-xl md:h-24 md:w-16 md:text-2xl',
+  // Four hole cards (PLO) need to fit in roughly the same footprint as two —
+  // scaled down from `lg` at every breakpoint so the row doesn't bleed into
+  // neighboring seat labels on narrow viewports.
+  'lg-quad': 'h-11 w-8 text-sm rounded sm:h-16 sm:w-11 sm:text-lg sm:rounded-lg md:h-18 md:w-13 md:text-xl',
 };
 
 const PIP_OFFSET: Record<Size, string> = {
   xs: 'top-0.5 left-0.5',
   sm: 'top-1 left-1',
   md: 'top-1.5 left-1.5',
+  'lg-quad': 'top-1 left-1',
   lg: 'top-2 left-2.5',
 };
 

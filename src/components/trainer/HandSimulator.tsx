@@ -1,36 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
-import { startHand, applyHeroAction, advance, type HandSim, type LogEntry, type SimAction } from '@/lib/poker/handSimulator';
+import { startHand, applyHeroAction, advance, type HandSim, type SimAction } from '@/lib/poker/handSimulator';
 import { cardDisplay } from '@/lib/poker/cards';
-import { positionLabel, type Position, type TableSize } from '@/lib/poker/ranges';
+import { type Position, type TableSize } from '@/lib/poker/ranges';
 import { Card } from '@/components/ui/Card';
 import { PokerTable } from './PokerTable';
 import { TableSizeSelector } from './TableSizeSelector';
 import { ConceptCallout } from './ConceptCallout';
+import { ACTION_TONE, STREET_LABEL, formatLog } from './simDisplay';
 import { cn } from '@/lib/cn';
-
-const ACTION_VERB: Record<SimAction, string> = {
-  fold: 'folds',
-  check: 'checks',
-  call: 'calls',
-  bet: 'bets',
-  raise: 'raises to',
-};
-
-const ACTION_TONE: Record<SimAction, string> = {
-  fold: 'border-fold/50 text-fold-soft hover:border-fold hover:bg-fold/10',
-  check: 'border-border-strong text-ink-muted hover:border-ink-muted hover:text-ink',
-  call: 'border-call/50 text-call-soft hover:border-call hover:bg-call/10',
-  bet: 'border-raise/50 text-raise-soft hover:border-raise hover:bg-raise/10',
-  raise: 'border-raise/50 text-raise-soft hover:border-raise hover:bg-raise/10',
-};
-
-const STREET_LABEL: Record<string, string> = { flop: 'FLOP', turn: 'TURN', river: 'RIVER', showdown: 'SHOWDOWN' };
-
-function formatLog(entry: LogEntry): string {
-  const who = entry.isHero ? 'You' : positionLabel(entry.position);
-  if (entry.amount !== undefined) return `${who} ${ACTION_VERB[entry.action]} ${entry.amount}bb`;
-  return `${who} ${ACTION_VERB[entry.action]}`;
-}
 
 export function HandSimulator() {
   const [tableSize, setTableSize] = useState<TableSize>(6);

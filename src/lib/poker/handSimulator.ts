@@ -7,9 +7,9 @@ import { ALL_HANDS, RANKS, scoreOf, type HandCell } from './hands';
 import { positionsForSize, rfiMix, defendMix, type Position, type RfiPosition, type TableSize } from './ranges';
 import { handCategoryLabel, pickExplanation } from './scenarioGenerator';
 import { explainPreflopDecision } from './preflopExplain';
+import type { SimStreet, SimAction, LogEntry, HeroOption, HeroFeedback } from './simTypes';
 
-export type SimStreet = 'preflop' | 'flop' | 'turn' | 'river' | 'showdown';
-export type SimAction = 'fold' | 'check' | 'call' | 'bet' | 'raise';
+export type { SimStreet, SimAction, LogEntry, HeroOption, HeroFeedback };
 
 export interface SimPlayer {
   position: Position;
@@ -18,29 +18,6 @@ export interface SimPlayer {
   folded: boolean;
   committed: number;
   committedStreet: number;
-}
-
-export interface LogEntry {
-  street: SimStreet;
-  position: Position;
-  action: SimAction;
-  amount?: number;
-  isHero: boolean;
-}
-
-export interface HeroOption {
-  id: SimAction;
-  label: string;
-  amount?: number;
-}
-
-export interface HeroFeedback {
-  chosenId: SimAction;
-  bestId: SimAction;
-  equityPct: number;
-  handLabel: string;
-  concept: string;
-  explanation: string;
 }
 
 export interface HandSim {

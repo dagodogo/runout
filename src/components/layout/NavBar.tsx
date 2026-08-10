@@ -7,6 +7,7 @@ import { cn } from '@/lib/cn';
 
 const LINKS = [
   { to: '/play', label: 'Play' },
+  { to: '/play-plo', label: 'PLO' },
   { to: '/train/preflop', label: 'Preflop' },
   { to: '/train/postflop', label: 'Postflop' },
   { to: '/train/gto', label: 'GTO' },
