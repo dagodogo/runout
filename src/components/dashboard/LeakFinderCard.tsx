@@ -6,8 +6,8 @@ export function LeakFinderCard({ leaks }: { leaks: LeakEntry[] }) {
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between">
-        <h3 className="font-display text-lg font-semibold text-ink">Leak Finder</h3>
-        <Badge tone="violet">Auto-detected</Badge>
+        <h3 className="font-display text-lg font-semibold text-ink">Leak finder</h3>
+        <Badge>Auto-detected</Badge>
       </div>
       {leaks.length === 0 ? (
         <p className="mt-3 text-sm text-ink-muted">
@@ -19,7 +19,7 @@ export function LeakFinderCard({ leaks }: { leaks: LeakEntry[] }) {
             <div key={leak.key}>
               <div className="mb-1 flex justify-between text-sm">
                 <span className="text-ink">{leak.label}</span>
-                <span className="font-mono text-ink-muted">
+                <span className="tabular-nums text-ink-muted">
                   {Math.round(leak.accuracy * 100)}% ({leak.correct}/{leak.attempts})
                 </span>
               </div>
@@ -28,7 +28,7 @@ export function LeakFinderCard({ leaks }: { leaks: LeakEntry[] }) {
                   className="h-full rounded-full"
                   style={{
                     width: `${leak.accuracy * 100}%`,
-                    background: leak.accuracy < 0.5 ? 'var(--color-error)' : 'var(--color-gold)',
+                    background: leak.accuracy < 0.5 ? 'var(--color-accent)' : 'var(--color-bone)',
                   }}
                 />
               </div>

@@ -7,6 +7,8 @@ import { PokerTable } from './PokerTable';
 import { TableSizeSelector } from './TableSizeSelector';
 import { ConceptCallout } from './ConceptCallout';
 import { ACTION_TONE, STREET_LABEL, formatLog } from './simDisplay';
+import { useProfileStore } from '@/lib/store/profile';
+import { spotCategory } from '@/lib/poker/leaks';
 import { cn } from '@/lib/cn';
 
 export function PloHandSimulator() {
@@ -14,6 +16,7 @@ export function PloHandSimulator() {
   const [sim, setSim] = useState<PloHandSim>(() => startPloHand(6));
   const [showFeedback, setShowFeedback] = useState(false);
   const [session, setSession] = useState({ hands: 0, correct: 0, decisions: 0, netBb: 0 });
+  const recordDecision = useProfileStore((s) => s.recordDecision);
 
   const heroPlayer = sim.players.find((p) => p.isHero)!;
 
@@ -32,9 +35,22 @@ export function PloHandSimulator() {
       if (applied.lastFeedback) {
         const correct = applied.lastFeedback.chosenId === applied.lastFeedback.bestId;
         setSession((s) => ({ ...s, decisions: s.decisions + 1, correct: s.correct + (correct ? 1 : 0) }));
+        // Preflop has no leak category, so only postflop decisions are recorded.
+        if (sim.street === 'flop' || sim.street === 'turn' || sim.street === 'river') {
+          const hero = sim.players.find((p) => p.isHero)!;
+          recordDecision({
+            source: 'heuristic',
+            game: 'plo',
+            street: sim.street,
+            category: spotCategory(sim.street, sim.currentBet > hero.committedStreet),
+            grade: correct ? 'best' : 'mistake',
+            evLossBb: null,
+            correct,
+          });
+        }
       }
     },
-    [sim],
+    [sim, recordDecision],
   );
 
   const dismissFeedback = useCallback(() => {
@@ -70,7 +86,7 @@ export function PloHandSimulator() {
     <Card className="mx-auto w-full max-w-4xl p-6 sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <TableSizeSelector value={tableSize} onChange={changeTableSize} />
-        <span className="font-mono text-xs text-ink-muted">
+        <span className="tabular-nums text-xs text-ink-muted">
           {session.correct}/{session.decisions} decisions &middot; {session.hands} hands &middot;{' '}
           <span className={session.netBb >= 0 ? 'text-ink' : 'text-error'}>
             {session.netBb >= 0 ? '+' : ''}
@@ -95,9 +111,9 @@ export function PloHandSimulator() {
           {sim.heroTurn && !showFeedback && (
             <div className="mt-2">
               <div className="flex items-center justify-center gap-2 text-center">
-                <p className="text-sm text-ink-muted">Your turn — what's the play?</p>
+                <p className="text-sm text-ink-muted">Your turn. What's the play?</p>
                 {potOddsPct !== null && (
-                  <span className="rounded-full border border-border bg-surface-2 px-2 py-0.5 font-mono text-[10px] text-ink-muted">
+                  <span className="rounded-full border border-border bg-surface-2 px-2 py-0.5 tabular-nums text-xs text-ink-muted">
                     To call {toCall}bb &middot; pot odds {potOddsPct}%
                   </span>
                 )}
@@ -112,7 +128,7 @@ export function PloHandSimulator() {
                     type="button"
                     onClick={() => handleAction(opt)}
                     className={cn(
-                      'cursor-pointer rounded-xl border py-4 text-sm font-semibold transition-colors duration-150',
+                      'cursor-pointer rounded-control border py-4 text-sm font-semibold transition-colors duration-150',
                       ACTION_TONE[opt.id],
                     )}
                   >
@@ -129,8 +145,8 @@ export function PloHandSimulator() {
                 concept={sim.lastFeedback.concept}
                 title={
                   sim.lastFeedback.chosenId === sim.lastFeedback.bestId
-                    ? `Correct — ${sim.lastFeedback.handLabel}`
-                    : `Better play was ${sim.lastFeedback.bestId} — ${sim.lastFeedback.handLabel}`
+                    ? `Correct: ${sim.lastFeedback.handLabel}`
+                    : `Better play was ${sim.lastFeedback.bestId}: ${sim.lastFeedback.handLabel}`
                 }
                 tone={sim.lastFeedback.chosenId === sim.lastFeedback.bestId ? 'success' : 'error'}
               >
@@ -140,7 +156,7 @@ export function PloHandSimulator() {
                 <button
                   type="button"
                   onClick={dismissFeedback}
-                  className="w-full cursor-pointer rounded-xl bg-gold py-3 text-sm font-semibold text-base transition-colors duration-150 hover:bg-gold-soft"
+                  className="w-full cursor-pointer rounded-control bg-accent py-3 text-sm font-semibold text-on-accent transition-colors duration-150 hover:bg-accent-hover"
                 >
                   Continue
                 </button>
@@ -152,12 +168,12 @@ export function PloHandSimulator() {
             <div className="mt-4 space-y-3">
               <div
                 className={cn(
-                  'rounded-xl border p-4 text-center',
+                  'rounded-control border p-4 text-center',
                   sim.result!.heroNet >= 0 ? 'border-success/30 bg-success/5' : 'border-error/30 bg-error/5',
                 )}
               >
                 <p className="text-sm text-ink">{sim.result!.summary}</p>
-                <p className={cn('mt-1 font-mono text-lg font-bold', sim.result!.heroNet >= 0 ? 'text-ink' : 'text-error')}>
+                <p className={cn('mt-1 tabular-nums text-lg font-bold', sim.result!.heroNet >= 0 ? 'text-ink' : 'text-error')}>
                   {sim.result!.heroNet >= 0 ? '+' : ''}
                   {sim.result!.heroNet.toFixed(1)}bb
                 </p>
@@ -165,7 +181,7 @@ export function PloHandSimulator() {
               <button
                 type="button"
                 onClick={nextHand}
-                className="w-full cursor-pointer rounded-xl bg-gold py-3 text-sm font-semibold text-base transition-colors duration-150 hover:bg-gold-soft"
+                className="w-full cursor-pointer rounded-control bg-accent py-3 text-sm font-semibold text-on-accent transition-colors duration-150 hover:bg-accent-hover"
               >
                 Deal next hand
               </button>
@@ -173,15 +189,15 @@ export function PloHandSimulator() {
           )}
         </div>
 
-        <div className="rounded-xl border border-border bg-surface-2 p-3">
-          <div className="text-[10px] font-semibold uppercase tracking-wide text-ink-faint">Hand log</div>
+        <div className="rounded-control border border-border bg-surface-2 p-3">
+          <div className="text-xs font-semibold text-ink-faint">Hand log</div>
           <div className="mt-2 max-h-[520px] space-y-1 overflow-y-auto text-xs">
             {sim.log.map((entry, i) => {
               const streetChanged = i === 0 || sim.log[i - 1].street !== entry.street;
               return (
                 <div key={i}>
                   {streetChanged && entry.street !== 'preflop' && (
-                    <div className="mb-1 mt-2 text-[9px] font-bold tracking-wide text-gold">{STREET_LABEL[entry.street]}</div>
+                    <div className="mb-1 mt-2 text-xs font-bold text-bone">{STREET_LABEL[entry.street]}</div>
                   )}
                   <div className={cn('text-ink-muted', entry.isHero && 'font-semibold text-ink')}>{formatLog(entry)}</div>
                 </div>

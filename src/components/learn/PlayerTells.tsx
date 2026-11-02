@@ -2,9 +2,10 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { TELLS, type Tell } from '@/data/tells';
 
-const RELIABILITY_TONE: Record<Tell['reliability'], 'success' | 'gold' | 'neutral'> = {
-  strong: 'success',
-  moderate: 'gold',
+// the word carries it; success/error are reserved for grades
+const RELIABILITY_TONE: Record<Tell['reliability'], 'call' | 'neutral'> = {
+  strong: 'call',
+  moderate: 'neutral',
   weak: 'neutral',
 };
 
@@ -13,7 +14,7 @@ export function PlayerTells() {
     <Card className="p-6">
       <h3 className="font-display text-lg font-semibold text-ink">Player reads reference</h3>
       <p className="mt-1 text-xs text-ink-muted">
-        Live-poker tells only — timing and sizing patterns still beat physical reads, and any single tell is weaker
+        Live-poker tells only: timing and sizing patterns still beat physical reads, and any single tell is weaker
         than a pattern repeated across many hands.
       </p>
       <div className="mt-4 space-y-4">

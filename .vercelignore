@@ -1,0 +1,16 @@
+.git
+.gitignore
+node_modules
+dist
+.vercel
+.env
+.env.*
+.tmp
+.playwright-mcp
+*.log
+*.png
+spots.out
+*.md
+!README.md
+!THIRD_PARTY_LICENSES.md
+src/**/*.test.mjs

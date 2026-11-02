@@ -1,0 +1,124 @@
+{
+  "note": "Generated once by .tmp/wasm-postflop/hero-hand.mjs from one real solve. Text from explain.ts, labels from walk.ts. Card ids: 4*rank+suit (cards.ts).",
+  "generated": "2026-11-01",
+  "spot": {
+    "ipPos": "BTN",
+    "heroSeat": "ip",
+    "potBb": 5.5,
+    "stackBb": 97.5,
+    "tree": "lean-xr"
+  },
+  "solve": {
+    "exploitabilityPct": 0.93,
+    "iterations": 40,
+    "seconds": 324,
+    "build": "single-thread"
+  },
+  "hero": [
+    45,
+    37
+  ],
+  "flop": {
+    "board": [
+      47,
+      21,
+      0
+    ],
+    "potBb": 5.5,
+    "actions": [
+      "Check",
+      "Bet:28"
+    ],
+    "table": [
+      {
+        "label": "Check",
+        "freq": 0.121752,
+        "evBb": 7.38526
+      },
+      {
+        "label": "Bet 50% pot",
+        "freq": 0.878248,
+        "evBb": 7.55245
+      }
+    ],
+    "sentences": [
+      "You hold a made hand (pair) with 86% equity against his range: very strong. The solver mostly bets it for value.",
+      "You have the nut edge: 11% of your range is near-certain to win, against 4% of his.",
+      "Your range is ahead: 54% equity against 46%."
+    ],
+    "choices": [
+      {
+        "headline": "Fine - solver: Bet 50% pot 88% of the time, Check 12%; your hand loses 0.2bb by checking",
+        "grade": "fine",
+        "correct": true,
+        "evLossBb": 0.16719000000000078,
+        "lossPot": 0.030398181818181963,
+        "bestAction": 1
+      },
+      {
+        "headline": "Best - solver: Bet 50% pot 88% of the time, Check 12%; betting is the top-EV play for your hand",
+        "grade": "best",
+        "correct": true,
+        "evLossBb": 0,
+        "lossPot": 0,
+        "bestAction": 1
+      }
+    ],
+    "line": [
+      "BB checks."
+    ],
+    "chosen": 0
+  },
+  "turn": {
+    "board": [
+      47,
+      21,
+      0,
+      38
+    ],
+    "potBb": 11.1,
+    "actions": [
+      "Check",
+      "Bet:83"
+    ],
+    "table": [
+      {
+        "label": "Check",
+        "freq": 0,
+        "evBb": 15.0352
+      },
+      {
+        "label": "Bet 75% pot",
+        "freq": 1,
+        "evBb": 18.246299999999998
+      }
+    ],
+    "sentences": [
+      "You hold a made hand (two pair) with 94% equity against his range: very strong. The solver mostly bets it for value.",
+      "You have the nut edge: 19% of your range is near-certain to win, against 5% of his.",
+      "His range is ahead: 57% equity against your 43%."
+    ],
+    "choices": [
+      {
+        "headline": "Blunder - solver: Bet 75% pot 100% of the time; your hand loses 3.2bb by checking",
+        "grade": "blunder",
+        "correct": false,
+        "evLossBb": 3.211099999999999,
+        "lossPot": 0.2892882882882882,
+        "bestAction": 1
+      },
+      {
+        "headline": "Best - solver: Bet 75% pot 100% of the time; betting is the top-EV play for your hand",
+        "grade": "best",
+        "correct": true,
+        "evLossBb": 0,
+        "lossPot": 0,
+        "bestAction": 1
+      }
+    ],
+    "line": [
+      "You bet, BB calls.",
+      "BB checks."
+    ]
+  }
+}

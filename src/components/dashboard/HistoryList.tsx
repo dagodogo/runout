@@ -1,4 +1,3 @@
-import { Check, X } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import type { HistoryEntry } from '@/lib/poker/stats';
@@ -24,11 +23,11 @@ export function HistoryList({ entries }: { entries: HistoryEntry[] }) {
           {entries.map((e) => (
             <div key={e.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
               <div className="flex items-center gap-3">
-                <Badge tone={e.correct ? 'success' : 'error'} className="w-8 justify-center">
-                  {e.correct ? <Check size={12} aria-label="Correct" /> : <X size={12} aria-label="Incorrect" />}
+                <Badge tone={e.correct ? 'success' : 'error'} className="w-24 justify-center">
+                  {e.correct ? 'Correct' : 'Missed'}
                 </Badge>
                 <div>
-                  <span className="font-mono font-semibold text-ink">{e.label}</span>
+                  <span className="tabular-nums font-semibold text-ink">{e.label}</span>
                   <span className="ml-2 text-xs text-ink-faint">{e.detail}</span>
                 </div>
               </div>

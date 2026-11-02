@@ -12,7 +12,7 @@ export function StrategyLibrary() {
       <h3 className="font-display text-lg font-semibold text-ink">Strategy library</h3>
       <p className="mt-1 text-xs text-ink-muted">The core ideas behind every recommendation you'll see in the trainers.</p>
 
-      <div className="mt-4 divide-y divide-border rounded-xl border border-border">
+      <div className="mt-4 divide-y divide-border rounded-control border border-border">
         {STRATEGY_NOTES.map((note, i) => {
           const isOpen = open === i;
           return (
@@ -26,7 +26,7 @@ export function StrategyLibrary() {
                 <span className="text-sm font-semibold text-ink">{note.title}</span>
                 <ChevronDown
                   size={16}
-                  className={cn('shrink-0 text-ink-faint transition-transform duration-200', isOpen && 'rotate-180 text-gold')}
+                  className={cn('shrink-0 text-ink-faint transition-transform duration-200', isOpen && 'rotate-180 text-bone')}
                   aria-hidden="true"
                 />
               </button>
@@ -34,7 +34,7 @@ export function StrategyLibrary() {
                 <ul className="space-y-2 px-4 pb-4 text-sm text-ink-muted">
                   {note.points.map((p) => (
                     <li key={p} className="flex gap-2">
-                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-gold" />
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
                       <span>{p}</span>
                     </li>
                   ))}
@@ -45,11 +45,11 @@ export function StrategyLibrary() {
         })}
       </div>
 
-      <h4 className="mt-6 text-xs font-semibold uppercase tracking-wide text-ink-faint">Illustrative examples</h4>
+      <h4 className="mt-6 text-xs font-semibold text-ink-faint">Illustrative examples</h4>
       <div className="mt-3 space-y-3">
         {STRATEGY_EXAMPLES.map((ex) => (
-          <div key={ex.title} className="rounded-xl border border-border bg-surface-2 p-4">
-            <div className="text-sm font-semibold text-gold">{ex.title}</div>
+          <div key={ex.title} className="rounded-control border border-border bg-surface-2 p-4">
+            <div className="text-sm font-semibold text-bone">{ex.title}</div>
             <p className="mt-1 text-sm text-ink-muted">{ex.body}</p>
           </div>
         ))}

@@ -152,7 +152,7 @@ const CALL_MADE_HAND_LINES = [
 
 const CALL_DRAW_LINES = [
   "You're not ahead right now, but the price plus what you can win when you hit make this call correct — that's implied odds, not just pot odds.",
-  'This is a drawing call: the immediate pot odds plus the extra value on later streets when you connect are enough to continue.',
+  'This is a drawing call: the immediate pot odds plus the extra money on later streets when you connect are enough to continue.',
 ];
 
 const FOLD_LINES = [

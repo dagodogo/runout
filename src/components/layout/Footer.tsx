@@ -1,23 +1,51 @@
 import { NavLink } from 'react-router-dom';
 import { Logo } from './Logo';
 
+const LINKS = [
+  { to: '/train/solver', label: 'Solver trainer' },
+  { to: '/play', label: 'Play' },
+  { to: '/train/preflop', label: 'Preflop' },
+  { to: '/dashboard', label: 'Progress' },
+  { to: '/learn', label: 'Learn' },
+];
+
 export function Footer() {
   return (
-    <footer className="mt-24 border-t border-border">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-10 text-sm text-ink-muted sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2 font-display text-base font-semibold text-ink">
-          <Logo />
-          Runout
+    <footer className="border-t border-rule">
+      <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-12 text-sm sm:px-6 lg:grid-cols-[1fr_auto]">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2 font-display text-base font-semibold text-bone">
+            <Logo />
+            <span translate="no">Runout</span>
+          </div>
+          <p className="text-faint">Educational training software. No real-money play. 18+.</p>
+          <p className="text-faint">
+            Postflop solver:{' '}
+            <a
+              href="https://github.com/b-inary/wasm-postflop"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-graphite underline hover:text-bone"
+            >
+              wasm-postflop by b-inary, AGPL-3.0
+            </a>
+          </p>
         </div>
-        <nav className="flex flex-wrap gap-x-6 gap-y-2">
-          <NavLink to="/train/preflop" className="hover:text-ink">Preflop Trainer</NavLink>
-          <NavLink to="/train/postflop" className="hover:text-ink">Postflop Trainer</NavLink>
-          <NavLink to="/dashboard" className="hover:text-ink">Dashboard</NavLink>
-          <NavLink to="/learn" className="hover:text-ink">Learn Hub</NavLink>
+        <nav aria-label="Footer" className="flex flex-wrap content-start gap-x-6 gap-y-1">
+          {LINKS.map((l) => (
+            <NavLink key={l.to} to={l.to} className="inline-flex min-h-11 items-center text-graphite hover:text-bone">
+              {l.label}
+            </NavLink>
+          ))}
+          <a
+            href="https://github.com/dagodogo/runout"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-11 items-center text-graphite hover:text-bone"
+          >
+            Source code (AGPL-3.0)
+          </a>
         </nav>
-        <p className="text-xs text-ink-faint">
-          Educational training software. No real-money play. 18+.
-        </p>
       </div>
     </footer>
   );

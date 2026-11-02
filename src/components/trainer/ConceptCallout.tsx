@@ -15,13 +15,13 @@ export function ConceptCallout({ concept, title, children, tone = 'success' }: C
   return (
     <div
       className={cn(
-        'rounded-xl border p-4',
-        tone === 'success' ? 'border-success/25 bg-success/5' : 'border-gold/25 bg-gold/5',
+        'rounded-control border p-4',
+        tone === 'success' ? 'border-good/30 bg-raised' : 'border-bad/30 bg-raised',
       )}
     >
       <div className="flex items-center gap-2">
-        <Lightbulb size={14} className="text-gold" aria-hidden="true" />
-        <span className="text-xs font-semibold uppercase tracking-wide text-gold">{concept}</span>
+        <Lightbulb size={14} className="text-bone" aria-hidden="true" />
+        <span className="text-xs font-semibold text-bone">{concept}</span>
       </div>
       <p className="mt-2 text-sm font-medium text-ink">{title}</p>
       <p className="mt-1 text-sm leading-relaxed text-ink-muted">{children}</p>

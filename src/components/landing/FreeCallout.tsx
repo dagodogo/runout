@@ -1,34 +1,40 @@
 import { Link } from 'react-router-dom';
-import { Lock, Zap, WifiOff } from 'lucide-react';
+import { buttonClass } from '@/components/ui/Button';
 
-const POINTS = [
-  { icon: Zap, text: 'No signup, no paywall — every trainer is unlocked from the start.' },
-  { icon: WifiOff, text: 'Runs client-side, so once it\'s loaded it works without a connection.' },
-  { icon: Lock, text: 'Your session history is stored only in this browser — nothing is uploaded.' },
+// the first two lines are verbatim from the brief; keep them as literals
+const TRUST = [
+  'Preflop ranges are a hand-authored approximation of common 6-max 100bb charts, not solver output. Everything postflop is solved live given those ranges.',
+  'Simplified action tree: one bet size per street, flop check-raise only, no re-raises.',
+  'So a grade means "best given these ranges and this tree", not "best against every opponent".',
+  "Each solve needs about 600 MB of memory and takes 30 to 90 seconds on a recent laptop, or 2 to 4 minutes on browsers that can't run it on several threads.",
+  'Runout is free and open source under AGPL-3.0. Your history stays in this browser. No account, no real-money play.',
 ];
 
 export function FreeCallout() {
   return (
-    <section className="mt-28 rounded-3xl border border-border bg-surface p-10 text-center sm:p-14">
-      <h2 className="font-display text-3xl font-semibold text-ink sm:text-4xl">Free. Local. Yours.</h2>
-      <p className="mx-auto mt-3 max-w-xl text-ink-muted">
-        Runout is a personal training tool, not a product with a funnel. There's no pricing page
-        because there's nothing to buy.
-      </p>
-      <div className="mx-auto mt-8 grid max-w-3xl gap-6 text-left sm:grid-cols-3">
-        {POINTS.map((p) => (
-          <div key={p.text} className="flex items-start gap-3">
-            <p.icon size={18} className="mt-0.5 shrink-0 text-gold" aria-hidden="true" />
-            <p className="text-sm text-ink-muted">{p.text}</p>
-          </div>
-        ))}
-      </div>
-      <Link
-        to="/train/preflop"
-        className="mt-9 inline-flex h-12 cursor-pointer items-center justify-center rounded-xl bg-gold px-7 text-base font-semibold text-base transition-colors duration-200 hover:bg-gold-soft"
-      >
-        Start training
-      </Link>
-    </section>
+    <>
+      <section aria-labelledby="trust-title" className="mt-24 sm:mt-32 lg:grid lg:grid-cols-12 lg:gap-12">
+        <h2 id="trust-title" className="text-h2 font-semibold text-bone lg:col-span-5">
+          How far to trust the grades
+        </h2>
+        <ul className="mt-6 space-y-4 lg:col-span-7 lg:mt-0">
+          {TRUST.map((t) => (
+            <li key={t} className="max-w-[65ch] border-l-2 border-rule-strong pl-4 text-bone">
+              {t}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="last-title" className="mt-24 border-t border-rule pt-16 sm:mt-32">
+        <h2 id="last-title" className="text-h2 font-semibold text-bone">
+          Deal a hand and see where you stand.
+        </h2>
+        <Link to="/train/solver" className={buttonClass('primary', 'mt-8')}>
+          Train a hand
+        </Link>
+        <p className="mt-4 text-sm text-faint">Opens the solver trainer. The first hand is ready in about a minute.</p>
+      </section>
+    </>
   );
 }

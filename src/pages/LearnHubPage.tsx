@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
-import { PageShell } from '@/components/layout/PageShell';
+import { PageShell, PageHeader } from '@/components/layout/PageShell';
+import { buttonClass } from '@/components/ui/Button';
 import { OddsCalculator } from '@/components/learn/OddsCalculator';
 import { GlossaryList } from '@/components/learn/GlossaryList';
 import { StrategyLibrary } from '@/components/learn/StrategyLibrary';
@@ -25,13 +26,10 @@ export function LearnHubPage() {
 
   return (
     <PageShell>
-      <div>
-        <h1 className="font-display text-3xl font-semibold text-ink sm:text-4xl">Learn Hub</h1>
-        <p className="mt-2 max-w-2xl text-ink-muted">
-          Free reference material — no login required. Calculate odds, study the strategy behind the
-          trainers, look up terms, or print a range chart to keep next to your monitor.
-        </p>
-      </div>
+      <PageHeader title="Learn">
+        Free reference material, no login required. Calculate odds, study the strategy behind the trainers, look up
+        terms, or print a range chart to keep next to your monitor.
+      </PageHeader>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <StrategyLibrary />
@@ -52,7 +50,7 @@ export function LearnHubPage() {
             <button
               type="button"
               onClick={() => window.print()}
-              className="cursor-pointer rounded-lg bg-gold px-3.5 py-2 text-sm font-semibold text-base transition-colors duration-150 hover:bg-gold-soft"
+              className={buttonClass('secondary')}
             >
               Print chart
             </button>

@@ -54,7 +54,7 @@ export function RangeGrid({ position, openerPosition, onCellClick, highlightHand
 function HandDetail({ hand, mix }: { hand: HandCell; mix: ReturnType<typeof getMix> }) {
   return (
     <div>
-      <div className="font-mono text-2xl font-semibold text-ink">{hand.label}</div>
+      <div className="tabular-nums text-2xl font-semibold text-ink">{hand.label}</div>
       <div className="mt-4 space-y-2">
         <MixRow label="Raise" value={mix.raise} color="var(--color-raise)" />
         {mix.call > 0.005 && <MixRow label="Call" value={mix.call} color="var(--color-call)" />}
@@ -69,7 +69,7 @@ function MixRow({ label, value, color }: { label: string; value: number; color: 
     <div>
       <div className="mb-1 flex justify-between text-xs text-ink-muted">
         <span>{label}</span>
-        <span className="font-mono">{Math.round(value * 100)}%</span>
+        <span className="tabular-nums">{Math.round(value * 100)}%</span>
       </div>
       <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
         <div className="h-full rounded-full" style={{ width: `${value * 100}%`, background: color }} />

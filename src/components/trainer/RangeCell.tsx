@@ -28,6 +28,8 @@ function RangeCellImpl({ hand, mix, selected, dimmed, onHover, onClick }: RangeC
     stops.push(`var(--color-fold) ${cursor}% 100%`);
     return `linear-gradient(90deg, ${stops.join(', ')})`;
   }, [mix.raise, mix.call]);
+  // the label sits at 50%: white on red, black on bone, bone on fold (all AA, qa.md)
+  const ink = mix.raise >= 0.5 ? 'text-white' : mix.raise + mix.call >= 0.5 ? 'text-black' : 'text-bone';
 
   return (
     <button
@@ -35,14 +37,14 @@ function RangeCellImpl({ hand, mix, selected, dimmed, onHover, onClick }: RangeC
       onMouseEnter={() => onHover?.(hand)}
       onMouseLeave={() => onHover?.(null)}
       onClick={() => onClick?.(hand)}
-      className="group relative aspect-square cursor-pointer overflow-hidden rounded-[4px] border transition-transform duration-150 hover:z-10 hover:scale-110 hover:shadow-lg focus-visible:z-10 focus-visible:scale-110"
+      className="group relative aspect-square cursor-pointer overflow-hidden rounded-[4px] border transition-transform duration-150 hover:z-10 hover:scale-110 focus-visible:z-10 focus-visible:scale-110"
       style={{
         background,
-        borderColor: selected ? 'var(--color-gold)' : 'var(--color-border)',
+        borderColor: selected ? 'var(--color-bone)' : 'var(--color-rule)',
         opacity: dimmed ? 0.35 : 1,
       }}
     >
-      <span className="absolute inset-0 flex items-center justify-center font-mono text-[9px] font-semibold text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.7)] sm:text-[10px] md:text-xs">
+      <span className={`absolute inset-0 flex items-center justify-center tabular-nums text-[9px] font-semibold ${ink} sm:text-[10px] md:text-xs`}>
         {hand.label}
       </span>
     </button>

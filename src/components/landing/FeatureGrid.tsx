@@ -1,103 +1,44 @@
-import {
-  Grid3x3,
-  Layers,
-  Percent,
-  Search,
-  LineChart,
-  Trophy,
-  BookOpen,
-  ShieldCheck,
-  type LucideIcon,
-} from 'lucide-react';
-import { Card } from '@/components/ui/Card';
+import { Link } from 'react-router-dom';
+import { Badge } from '@/components/ui/Badge';
 
-interface Feature {
-  icon: LucideIcon;
-  title: string;
-  description: string;
-  tone: 'gold' | 'violet' | 'raise' | 'call';
-}
-
-const FEATURES: Feature[] = [
+// label sits beside the trainer it qualifies (storyboard principle 4); Play and PLO record source 'heuristic'
+const TRAINERS = [
+  { to: '/train/solver', name: 'Solver trainer', line: 'Hands from the flop to the river, each solved while you play.', label: 'Solver output' },
   {
-    icon: Grid3x3,
-    title: 'Preflop Range Trainer',
-    description: 'Drill every position\'s opening range on a full 169-hand grid until raise/fold is instinct.',
-    tone: 'gold',
+    to: '/play',
+    name: 'Play a hand',
+    line: 'Full 6-max hands from the deal to showdown against seats that follow common strategies.',
+    label: 'Heuristic approximation, not solver output',
   },
-  {
-    icon: Layers,
-    title: 'Postflop Scenario Trainer',
-    description: 'Every hand is freshly dealt and scored by a real 7-card equity engine — thousands of boards, not a fixed quiz bank.',
-    tone: 'violet',
-  },
-  {
-    icon: Percent,
-    title: 'GTO Frequency Trainer',
-    description: 'Learn to feel mixed strategies — the blend zones where hands split between two actions.',
-    tone: 'raise',
-  },
-  {
-    icon: Search,
-    title: 'Leak Finder',
-    description: 'Every rep is logged and categorized automatically, surfacing your weakest spots first.',
-    tone: 'call',
-  },
-  {
-    icon: LineChart,
-    title: 'Analytics Dashboard',
-    description: 'Accuracy trends, position breakdowns, and reps tracked over time — all in one view.',
-    tone: 'gold',
-  },
-  {
-    icon: Trophy,
-    title: 'Unlimited skill tiers',
-    description: 'Earn XP with every rep and climb from Limper toward Runout Elite — there\'s always another level.',
-    tone: 'violet',
-  },
-  {
-    icon: BookOpen,
-    title: 'Learn Hub',
-    description: 'A strategy library, player-reads reference, odds calculator, and printable charts — no login required.',
-    tone: 'raise',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Local-first & private',
-    description: 'No account, no server. Your practice history lives in your browser, not our database.',
-    tone: 'call',
-  },
+  { to: '/play-plo', name: 'PLO', line: 'The same full hands with four hole cards.', label: 'Heuristic approximation, not solver output' },
+  { to: '/train/preflop', name: 'Preflop', line: 'Learn opening and defending ranges for each seat on a 13 by 13 grid.', label: 'Hand-authored chart' },
+  { to: '/learn', name: 'Learn', line: 'Glossary, strategy notes, an odds calculator and common player types.' },
 ];
-
-const TONE_CLASSES: Record<Feature['tone'], string> = {
-  gold: 'bg-gold/10 text-gold',
-  violet: 'bg-violet/10 text-violet-soft',
-  raise: 'bg-raise/10 text-raise-soft',
-  call: 'bg-call/10 text-call-soft',
-};
 
 export function FeatureGrid() {
   return (
-    <section className="mt-28">
-      <div className="max-w-2xl">
-        <h2 className="font-display text-3xl font-semibold text-ink sm:text-4xl">
-          Everything you need to actually get better
-        </h2>
-        <p className="mt-3 text-ink-muted">
-          Not a static chart dump — a training loop that adapts to where you're actually leaking money.
-        </p>
-      </div>
-      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {FEATURES.map((f) => (
-          <Card key={f.title} className="p-6">
-            <div className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${TONE_CLASSES[f.tone]}`}>
-              <f.icon size={20} strokeWidth={2} aria-hidden="true" />
-            </div>
-            <h3 className="mt-4 font-display text-base font-semibold text-ink">{f.title}</h3>
-            <p className="mt-1.5 text-sm text-ink-muted">{f.description}</p>
-          </Card>
+    <section aria-labelledby="trainers-title" className="mt-24 sm:mt-32">
+      <h2 id="trainers-title" className="text-h2 font-semibold text-bone">
+        Five ways to train
+      </h2>
+      <ul className="mt-8 divide-y divide-rule border-y border-rule">
+        {TRAINERS.map((t) => (
+          <li key={t.to} className="grid gap-2 py-5 lg:grid-cols-12 lg:items-center lg:gap-6">
+            <Link
+              to={t.to}
+              className="font-display text-h3 font-semibold text-bone underline decoration-transparent underline-offset-4 hover:decoration-bone lg:col-span-3"
+            >
+              {t.name}
+            </Link>
+            <p className="max-w-[65ch] text-graphite lg:col-span-6">{t.line}</p>
+            <div className="lg:col-span-3 lg:text-right">{t.label && <Badge>{t.label}</Badge>}</div>
+          </li>
         ))}
-      </div>
+      </ul>
+      <p className="mt-5 max-w-[65ch] text-sm text-graphite">
+        Also in the app: a postflop drill and a frequency drill, both heuristic, and a progress page that shows where you
+        lose the most.
+      </p>
     </section>
   );
 }

@@ -23,16 +23,16 @@ export function ChipStack({ amountBb, size = 'sm', className }: ChipStackProps) 
             style={{
               bottom: i * chipH,
               height: chipH + 2,
-              borderColor: i % 2 === 0 ? 'var(--color-gold)' : 'var(--color-ink)',
+              borderColor: i % 2 === 0 ? 'var(--color-bone)' : 'var(--color-rule-strong)',
               background:
                 i % 2 === 0
-                  ? 'linear-gradient(180deg, var(--color-gold-soft), var(--color-gold))'
-                  : 'linear-gradient(180deg, #3a3a3a, #1a1a1a)',
+                  ? 'var(--color-graphite)'
+                  : 'var(--color-raised)',
             }}
           />
         ))}
       </div>
-      <span className="mt-1 font-mono text-[9px] font-semibold text-ink-muted">{amountBb}bb</span>
+      <span className="mt-1 tabular-nums text-xs font-semibold text-graphite">{amountBb}bb</span>
     </div>
   );
 }

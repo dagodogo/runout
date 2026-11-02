@@ -10,19 +10,19 @@ interface StatTileProps {
 }
 
 const TONE_TEXT: Record<NonNullable<StatTileProps['tone']>, string> = {
-  gold: 'text-gold',
-  violet: 'text-violet-soft',
-  success: 'text-success',
-  error: 'text-error',
-  neutral: 'text-ink',
+  gold: 'text-accent-text',
+  violet: 'text-bone',
+  success: 'text-good',
+  error: 'text-bad',
+  neutral: 'text-bone',
 };
 
 export function StatTile({ label, value, sublabel, tone = 'neutral' }: StatTileProps) {
   return (
     <Card className="p-5">
-      <div className="text-xs font-medium uppercase tracking-wide text-ink-faint">{label}</div>
-      <div className={cn('mt-2 font-mono text-3xl font-semibold', TONE_TEXT[tone])}>{value}</div>
-      {sublabel && <div className="mt-1 text-xs text-ink-muted">{sublabel}</div>}
+      <div className="text-sm text-faint">{label}</div>
+      <div className={cn('mt-1 font-display text-3xl font-semibold tabular-nums', TONE_TEXT[tone])}>{value}</div>
+      {sublabel && <div className="mt-1 text-sm text-graphite">{sublabel}</div>}
     </Card>
   );
 }

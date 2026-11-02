@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
-import { PageShell } from '@/components/layout/PageShell';
+import { PageShell, PageHeader } from '@/components/layout/PageShell';
+import { Badge } from '@/components/ui/Badge';
 import { PositionSelector } from '@/components/trainer/PositionSelector';
 import { TableSizeSelector } from '@/components/trainer/TableSizeSelector';
 import { RangeGrid } from '@/components/trainer/RangeGrid';
@@ -35,13 +36,10 @@ export function PreflopTrainerPage() {
   return (
     <PageShell>
       <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="font-display text-3xl font-semibold text-ink sm:text-4xl">Preflop Range Trainer</h1>
-          <p className="mt-2 max-w-2xl text-ink-muted">
-            Solver-flavored ranges for every seat at a 6-max or full-ring table. Drill hands until the
-            right action is instinct, or browse the full chart to study the shape of each range.
-          </p>
-        </div>
+        <PageHeader title="Preflop" aside={<Badge className="self-start">Hand-authored chart</Badge>}>
+          Opening and defending ranges for every seat at a 6-max or full-ring table. Drill hands until the right action
+          is instinct, or browse the full chart to study the shape of each range.
+        </PageHeader>
 
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
@@ -60,7 +58,7 @@ export function PreflopTrainerPage() {
 
         {position === 'BB' && (
           <div className="flex flex-wrap items-center gap-3">
-            <span className="text-xs text-ink-muted">Defending against an open from</span>
+            <span className="text-sm text-graphite">Defending against an open from</span>
             <Tabs
               value={openerPosition}
               onChange={setOpenerPosition}

@@ -1,50 +1,68 @@
 import { Link } from 'react-router-dom';
-import heroArt from '@/assets/hero-art.webp';
+import hand from '@/data/heroHand.json';
+import type { Grade } from '@/lib/solver/grade';
+import { buttonClass } from '@/components/ui/Button';
+import { GradePanel } from '@/components/trainer/GradePanel';
+import { SeatRows } from '@/components/trainer/SeatRows';
+import { actionLabel } from '@/components/trainer/solverFormat';
+
+const { flop, spot } = hand;
+const pick = flop.choices[flop.chosen];
+const bb = (v: number) => `${v.toFixed(1)} bb`;
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden pt-8">
-      <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-6">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-border-strong bg-surface px-3 py-1 text-xs font-medium text-ink-muted">
-            <span className="h-1.5 w-1.5 rounded-full bg-success" />
-            Free &middot; runs entirely in your browser
-          </div>
-          <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.05] text-ink sm:text-5xl lg:text-6xl">
-            Train the poker decisions that actually move your win rate.
-          </h1>
-          <p className="mt-5 max-w-lg text-lg text-ink-muted">
-            Runout drills preflop ranges, postflop spots, and mixed GTO strategies until the right
-            play is instinct — then tells you exactly where your leaks are.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Link
-              to="/train/preflop"
-              className="inline-flex h-12 cursor-pointer items-center justify-center rounded-xl bg-gold px-7 text-base font-semibold text-base shadow-[0_0_24px_rgba(240,180,41,0.25)] transition-colors duration-200 hover:bg-gold-soft"
-            >
-              Start training free
-            </Link>
-            <Link
-              to="/learn"
-              className="inline-flex h-12 cursor-pointer items-center justify-center rounded-xl border border-border-strong px-7 text-base font-semibold text-ink transition-colors duration-200 hover:border-gold hover:text-gold"
-            >
-              Explore the Learn Hub
-            </Link>
-          </div>
-          <p className="mt-6 text-xs text-ink-faint">
-            No account. No real-money play. Your practice history stays on this device.
-          </p>
+    <section aria-labelledby="hero-title" className="grid gap-10 lg:grid-cols-12 lg:gap-12">
+      <div className="lg:col-span-5 lg:pt-10">
+        <h1 id="hero-title" className="text-display font-semibold text-bone">
+          See what the solver would play. Then see why.
+        </h1>
+        <p className="mt-6 max-w-[65ch] text-lead text-graphite">
+          Runout deals you a hand, solves it live in your browser and grades each decision against the solver, the
+          software strong players use to study. Then it tells you why, in plain English.
+        </p>
+        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <Link to="/train/solver" className={buttonClass('primary')}>
+            Train a hand
+          </Link>
+          <a
+            href="#how"
+            className="inline-flex min-h-11 items-center text-sm font-semibold text-bone underline decoration-rule-strong underline-offset-4 hover:decoration-bone"
+          >
+            How it teaches you
+          </a>
         </div>
-
-        <div className="relative">
-          <img
-            src={heroArt}
-            alt="Abstract illustration of poker chip stacks and a fanned hand of cards over a radial instrument grid"
-            className="w-full rounded-3xl border border-border"
-            loading="eager"
-          />
-        </div>
+        <p className="mt-6 text-sm text-faint">Free. No account. Open source.</p>
       </div>
+
+      <figure className="rounded-panel border border-rule bg-panel p-4 sm:p-6 lg:col-span-7">
+        <p className="text-sm text-graphite">
+          {spot.ipPos} vs BB, single-raised pot
+        </p>
+        <SeatRows
+          className="mt-4"
+          villain={{ name: 'BB', stack: bb(spot.stackBb) }}
+          hero={{ name: `You (${spot.ipPos})`, stack: bb(spot.stackBb), cards: hand.hero }}
+          board={flop.board}
+          pot={bb(flop.potBb)}
+          line={flop.line}
+        />
+        <GradePanel
+          className="mt-6 border-t border-rule pt-6"
+          grade={pick.grade as Grade}
+          headline={pick.headline}
+          rows={flop.table}
+          chosen={flop.chosen}
+          potBb={flop.potBb}
+          sentences={flop.sentences}
+          context={`You played ${actionLabel(flop.actions[flop.chosen], flop.board.length)}`}
+          table={false}
+        />
+        <figcaption className="mt-6 text-sm text-faint">
+          A real hand, solved with the same engine the trainer runs, to {hand.solve.exploitabilityPct}% of the pot from
+          perfect.
+        </figcaption>
+      </figure>
     </section>
   );
 }

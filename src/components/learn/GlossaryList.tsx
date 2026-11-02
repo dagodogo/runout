@@ -22,12 +22,12 @@ export function GlossaryList() {
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search terms…"
         aria-label="Search glossary"
-        className="mt-4 w-full rounded-lg border border-border-strong bg-surface-2 px-3 py-2 text-sm text-ink outline-none focus:border-gold"
+        className="mt-4 w-full rounded-control border border-border-strong bg-surface-2 px-3 py-2 text-sm text-ink focus:border-bone"
       />
       <dl className="mt-4 max-h-96 space-y-4 overflow-y-auto pr-1">
         {filtered.map((t) => (
           <div key={t.term}>
-            <dt className="font-mono text-sm font-semibold text-gold">{t.term}</dt>
+            <dt className="tabular-nums text-sm font-semibold text-bone">{t.term}</dt>
             <dd className="mt-0.5 text-sm text-ink-muted">{t.definition}</dd>
           </div>
         ))}

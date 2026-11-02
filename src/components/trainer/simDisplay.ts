@@ -19,11 +19,12 @@ export const ACTION_VERB: Record<DisplaySimAction, string> = {
 };
 
 export const ACTION_TONE: Record<DisplaySimAction, string> = {
-  fold: 'border-fold/50 text-fold-soft hover:border-fold hover:bg-fold/10',
-  check: 'border-border-strong text-ink-muted hover:border-ink-muted hover:text-ink',
-  call: 'border-call/50 text-call-soft hover:border-call hover:bg-call/10',
-  bet: 'border-raise/50 text-raise-soft hover:border-raise hover:bg-raise/10',
-  raise: 'border-raise/50 text-raise-soft hover:border-raise hover:bg-raise/10',
+  // red marks the aggressive actions only (storyboard principle 2); every border is at least 3:1 on black
+  fold: 'border-rule-strong text-graphite hover:bg-raised hover:text-bone',
+  check: 'border-rule-strong text-bone hover:bg-raised',
+  call: 'border-bone/70 text-bone hover:bg-raised',
+  bet: 'border-accent text-accent-text hover:bg-accent/10',
+  raise: 'border-accent text-accent-text hover:bg-accent/10',
 };
 
 export const STREET_LABEL: Record<string, string> = { flop: 'FLOP', turn: 'TURN', river: 'RIVER', showdown: 'SHOWDOWN' };

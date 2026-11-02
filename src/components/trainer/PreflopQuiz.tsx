@@ -80,7 +80,7 @@ export function PreflopQuiz({ position, tableSize = 6, openerPosition = 'BTN' }:
     <Card className="mx-auto w-full max-w-xl p-6 sm:p-8">
       <div className="flex items-center justify-between text-xs text-ink-muted">
         <span>{positionDescription(position, openerPosition)}</span>
-        <span className="font-mono">
+        <span className="tabular-nums">
           {session.correct}/{session.total} &middot; streak {session.streak}
         </span>
       </div>
@@ -98,7 +98,7 @@ export function PreflopQuiz({ position, tableSize = 6, openerPosition = 'BTN' }:
 
       <div className="mt-6 text-center">
         <p className="text-sm text-ink-muted">
-          What's the play with <span className="font-mono font-semibold text-ink">{round.hand.label}</span>?
+          What's the play with <span className="tabular-nums font-semibold text-ink">{round.hand.label}</span>?
         </p>
       </div>
 
@@ -110,14 +110,14 @@ export function PreflopQuiz({ position, tableSize = 6, openerPosition = 'BTN' }:
             disabled={!!round.answered}
             onClick={() => handleAnswer(action)}
             className={cn(
-              'cursor-pointer rounded-xl border py-4 text-sm font-semibold transition-colors duration-150 disabled:cursor-default',
+              'cursor-pointer rounded-control border py-4 text-sm font-semibold transition-colors duration-150 disabled:cursor-default',
               round.answered
                 ? action === dominant
                   ? 'border-success bg-success/15 text-success'
                   : action === round.answered
                     ? 'border-error bg-error/15 text-error'
                     : 'border-border text-ink-faint opacity-50'
-                : 'border-border-strong text-ink hover:border-gold hover:text-gold',
+                : 'border-border-strong text-ink hover:border-bone hover:text-bone',
             )}
           >
             {ACTION_LABEL[action]}
@@ -155,7 +155,7 @@ export function PreflopQuiz({ position, tableSize = 6, openerPosition = 'BTN' }:
           <button
             type="button"
             onClick={nextHand}
-            className="w-full cursor-pointer rounded-xl bg-gold py-3 text-sm font-semibold text-base transition-colors duration-150 hover:bg-gold-soft"
+            className="w-full cursor-pointer rounded-control bg-accent py-3 text-sm font-semibold text-on-accent transition-colors duration-150 hover:bg-accent-hover"
           >
             Next hand
           </button>

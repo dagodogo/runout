@@ -1,78 +1,132 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* Self-hosted variable fonts (OFL, public/fonts/OFL-*.txt). No cross-origin stylesheet: the solver's COEP header stays clean. */
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-latin-wght.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin-wght.woff2") format("woff2");
+}
+
 @theme {
-  /* Backgrounds — true neutral black layers, no color tint */
-  --color-base: #0a0a0a;
-  --color-surface: #131313;
-  --color-surface-2: #1c1c1c;
+  /* Palette (DESIGN.md). Contrast on black in brackets. */
+  --color-black: #0a0a0a; /* page */
+  --color-panel: #141414; /* panels, rows */
+  --color-raised: #1e1e1e; /* hover, selected, sticky bar */
+  --color-rule: #2e2e2e; /* borders, grid lines, EV axis */
+  --color-rule-strong: #6b6b6b; /* control outlines, >= 3:1 on black, panel and raised */
+  --color-bone: #f2f2ef; /* text, Check/Call, card face (18:1) */
+  --color-graphite: #a3a3a3; /* secondary text (8.2:1) */
+  --color-faint: #8a8a8a; /* tertiary text (5.9:1) */
+  --color-accent: #e11d1d; /* primary fill, Bet/Raise, focus ring */
+  --color-accent-hover: #c41414; /* primary hover: darker, so white text keeps contrast */
+  --color-accent-text: #ff5a5a; /* red text on dark */
+  --color-on-accent: #ffffff; /* text on accent */
+  --color-fold: #3d3d3d; /* Fold segments and cells */
+  --color-card-red: #c41414; /* hearts, diamonds on bone */
+  --color-card-black: #0a0a0a; /* spades, clubs on bone */
+  --color-good: #5aa9ff; /* grades best/fine only */
+  --color-bad: #ff9f1c; /* grades mistake/blunder only */
+
+  /* Legacy names, kept as aliases so untouched files keep working. shortcut: aliases, remove when every file uses the names above. */
+  /* no --color-base: it made `text-base` both a size and a colour */
+  --color-surface: var(--color-panel);
+  --color-surface-2: var(--color-raised);
   --color-surface-3: #262626;
-  --color-border: #2b2b2b;
-  --color-border-strong: #404040;
+  --color-border: var(--color-rule);
+  --color-border-strong: var(--color-rule-strong);
+  --color-ink: var(--color-bone);
+  --color-ink-muted: var(--color-graphite);
+  --color-ink-faint: var(--color-faint);
+  --color-gold: var(--color-accent);
+  --color-gold-soft: var(--color-accent-hover);
+  --color-violet: var(--color-graphite);
+  --color-violet-soft: var(--color-bone);
+  --color-raise: var(--color-accent);
+  --color-raise-soft: var(--color-accent-text);
+  --color-call: var(--color-bone);
+  --color-call-soft: var(--color-bone);
+  --color-fold-soft: var(--color-faint);
+  --color-mixed: var(--color-graphite);
+  --color-success: var(--color-good);
+  --color-error: var(--color-bad);
+  --color-warning: var(--color-bad);
 
-  /* Text */
-  --color-ink: #fafafa;
-  --color-ink-muted: #a3a3a3;
-  --color-ink-faint: #6b6b6b;
+  /* Type: two families, no monospace face. */
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, sans-serif;
+  --font-mono: var(--font-display); /* legacy name: numbers use Space Grotesk with tabular figures */
 
-  /* Brand — red is the single accent, everything else is black/white/gray */
-  --color-gold: #dc2626;
-  --color-gold-soft: #ef4444;
-  --color-violet: #d4d4d4;
-  --color-violet-soft: #f5f5f5;
+  /* Scale 1.25 on a 1rem body (DESIGN.md). */
+  --text-lead: 1.25rem;
+  --text-lead--line-height: 1.5;
+  --text-h3: 1.563rem;
+  --text-h3--line-height: 1.15;
+  --text-h2: 1.953rem;
+  --text-h2--line-height: 1.15;
+  --text-h1: 2.441rem;
+  --text-h1--line-height: 1.1;
+  --text-display: clamp(2.441rem, 5vw, 3.815rem);
+  --text-display--line-height: 1.05;
 
-  /* Semantic action colors (range trainer) — an intensity gradient from
-     bold red (raise) through white (call) to receding dark gray (fold) */
-  --color-raise: #dc2626;
-  --color-raise-soft: #f87171;
-  --color-call: #f5f5f5;
-  --color-call-soft: #ffffff;
-  --color-fold: #404040;
-  --color-fold-soft: #737373;
-  --color-mixed: #a3a3a3;
+  /* Radius by role, never one radius on everything. */
+  --radius-cell: 2px;
+  --radius-card: 6px;
+  --radius-control: 8px;
+  --radius-panel: 12px;
 
-  /* Feedback */
-  --color-success: #f5f5f5;
-  --color-error: #dc2626;
-  --color-warning: #dc2626;
-
-  /* Fonts */
-  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-
-  --shadow-glow-gold: 0 0 24px rgba(220, 38, 38, 0.3);
-  --shadow-glow-violet: 0 0 24px rgba(255, 255, 255, 0.12);
+  --shadow-raised: 0 8px 24px -8px rgb(0 0 0 / 0.7);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
   html {
     color-scheme: dark;
+    scroll-padding-top: 5rem; /* the sticky nav never covers a focused or anchored element */
+    scroll-padding-bottom: 7rem; /* nor does the trainer's fixed action bar on phones */
+    scrollbar-color: var(--color-rule-strong) var(--color-black);
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     margin: 0;
-    background: var(--color-base);
-    color: var(--color-ink);
+    background: var(--color-black);
+    color: var(--color-bone);
     font-family: var(--font-sans);
+    line-height: 1.6;
+    caret-color: var(--color-accent);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+    touch-action: manipulation;
   }
 
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-wrap: balance;
   }
 
   ::selection {
-    background: var(--color-gold);
-    color: var(--color-base);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-gold);
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
+  }
+
+  a {
+    text-underline-offset: 3px;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -82,4 +136,45 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+@layer components {
+  /* The one authored moment: the Readout reveal. Clip-path keeps the labels undistorted. */
+  @keyframes reveal-x {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+  }
+  .readout-bar { animation: reveal-x 420ms var(--ease-out) both; }
+  .readout-dim { animation: reveal-x 300ms var(--ease-out) 540ms both; }
+  .readout-dim-label { animation: fade-in 160ms linear 840ms both; }
+  /* feedback to an action: a new card or a swapped panel */
+  .fade-in { animation: fade-in 160ms linear both; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .readout-bar, .readout-dim, .readout-dim-label { animation: fade-in 150ms linear both; }
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-control);
+    background: var(--color-bone);
+    color: var(--color-black);
+    font-weight: 600;
+  }
+  .skip-link:focus { top: 0.75rem; }
+
+  /* the nav's link row scrolls inside itself on phones; no page-level horizontal scroll */
+  .scroll-row {
+    overflow-x: auto;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .scroll-row::-webkit-scrollbar { display: none; }
 }

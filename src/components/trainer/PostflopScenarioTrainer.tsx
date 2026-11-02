@@ -16,7 +16,7 @@ export function PostflopScenarioTrainer() {
   const [scenario, setScenario] = useState<GeneratedScenario>(() => generateScenario(6));
   const [chosenId, setChosenId] = useState<string | null>(null);
   const [session, setSession] = useState({ correct: 0, total: 0 });
-  const recordPostflop = useProfileStore((s) => s.recordPostflop);
+  const recordDecision = useProfileStore((s) => s.recordDecision);
 
   const handleChoose = useCallback(
     (optionId: string) => {
@@ -24,9 +24,17 @@ export function PostflopScenarioTrainer() {
       const correct = optionId === scenario.bestOptionId;
       setChosenId(optionId);
       setSession((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }));
-      recordPostflop({ scenarioId: scenario.id, category: scenario.category, correct });
+      recordDecision({
+        source: 'heuristic',
+        game: 'nlhe',
+        street: scenario.street,
+        category: scenario.category,
+        grade: correct ? 'best' : 'mistake',
+        evLossBb: null,
+        correct,
+      });
     },
-    [chosenId, scenario, recordPostflop],
+    [chosenId, scenario, recordDecision],
   );
 
   const nextScenario = useCallback(() => {
@@ -54,15 +62,16 @@ export function PostflopScenarioTrainer() {
     <Card className="mx-auto w-full max-w-3xl p-6 sm:p-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <TableSizeSelector value={tableSize} onChange={changeTableSize} />
-        <span className="font-mono text-xs text-ink-muted">
+        <span className="tabular-nums text-xs text-ink-muted">
           {session.correct}/{session.total} correct
         </span>
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-ink-muted">
-        <Badge tone="violet">{scenario.street.toUpperCase()}</Badge>
+        <Badge tone="violet">{scenario.street[0].toUpperCase() + scenario.street.slice(1)}</Badge>
         <Badge tone="neutral">{LEAK_CATEGORY_LABEL[scenario.category]}</Badge>
-        {scenario.isHeroAggressor && <Badge tone="gold">You raised preflop</Badge>}
+        {scenario.isHeroAggressor && <Badge>You raised preflop</Badge>}
+        <Badge>Heuristic approximation, not solver output</Badge>
       </div>
 
       <div className="mt-5">
@@ -79,21 +88,21 @@ export function PostflopScenarioTrainer() {
 
       <div className="mt-4 text-center text-sm text-ink-muted">{scenario.facing}</div>
       <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-        <div className="rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-center">
-          <div className="text-[9px] uppercase tracking-wide text-ink-faint">Hand</div>
+        <div className="rounded-control border border-border bg-surface-2 px-3 py-1.5 text-center">
+          <div className="text-xs text-ink-faint">Hand</div>
           <div className="text-xs font-semibold text-ink">{scenario.handCategoryLabel}</div>
         </div>
-        <div className="rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-center">
-          <div className="text-[9px] uppercase tracking-wide text-ink-faint">Equity</div>
-          <div className="font-mono text-xs font-semibold text-gold">{scenario.equityPct}%</div>
+        <div className="rounded-control border border-border bg-surface-2 px-3 py-1.5 text-center">
+          <div className="text-xs text-ink-faint">Equity</div>
+          <div className="tabular-nums text-xs font-semibold text-bone">{scenario.equityPct}%</div>
         </div>
-        <div className="rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-center">
-          <div className="text-[9px] uppercase tracking-wide text-ink-faint">Board</div>
+        <div className="rounded-control border border-border bg-surface-2 px-3 py-1.5 text-center">
+          <div className="text-xs text-ink-faint">Board</div>
           <div className="text-xs font-semibold text-ink">{scenario.texture.summary}</div>
         </div>
-        <div className="rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-center">
-          <div className="text-[9px] uppercase tracking-wide text-ink-faint">Eff. stack</div>
-          <div className="font-mono text-xs font-semibold text-ink">{scenario.effectiveStackBb}bb</div>
+        <div className="rounded-control border border-border bg-surface-2 px-3 py-1.5 text-center">
+          <div className="text-xs text-ink-faint">Eff. stack</div>
+          <div className="tabular-nums text-xs font-semibold text-ink">{scenario.effectiveStackBb}bb</div>
         </div>
       </div>
 
@@ -111,14 +120,14 @@ export function PostflopScenarioTrainer() {
               disabled={!!chosenId}
               onClick={() => handleChoose(opt.id)}
               className={cn(
-                'cursor-pointer rounded-xl border py-4 text-sm font-semibold transition-colors duration-150 disabled:cursor-default',
+                'cursor-pointer rounded-control border py-4 text-sm font-semibold transition-colors duration-150 disabled:cursor-default',
                 chosenId
                   ? isBest
                     ? 'border-success bg-success/15 text-success'
                     : isChosen
                       ? 'border-error bg-error/15 text-error'
                       : 'border-border text-ink-faint opacity-50'
-                  : 'border-border-strong text-ink hover:border-gold hover:text-gold',
+                  : 'border-border-strong text-ink hover:border-bone hover:text-bone',
               )}
             >
               {opt.label}
@@ -131,7 +140,7 @@ export function PostflopScenarioTrainer() {
         <div className="mt-6 space-y-4">
           <div className="flex items-center gap-2">
             {chosenId === scenario.bestOptionId ? (
-              <Badge tone="success">Correct — {bestOption.label}</Badge>
+              <Badge tone="success">Correct: {bestOption.label}</Badge>
             ) : (
               <Badge tone="error">Best line was {bestOption.label}</Badge>
             )}
@@ -143,9 +152,9 @@ export function PostflopScenarioTrainer() {
                 <div key={opt.id} className="flex items-center gap-3 text-xs">
                   <span className="w-32 shrink-0 text-ink-muted">{opt.label}</span>
                   <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-2">
-                    <div className="h-full rounded-full bg-gold" style={{ width: `${width}%` }} />
+                    <div className="h-full rounded-full bg-accent" style={{ width: `${width}%` }} />
                   </div>
-                  <span className="w-16 shrink-0 text-right font-mono text-ink-muted">{opt.ev.toFixed(1)}bb</span>
+                  <span className="w-16 shrink-0 text-right tabular-nums text-ink-muted">{opt.ev.toFixed(1)}bb</span>
                 </div>
               );
             })}
@@ -160,7 +169,7 @@ export function PostflopScenarioTrainer() {
           <button
             type="button"
             onClick={nextScenario}
-            className="w-full cursor-pointer rounded-xl bg-gold py-3 text-sm font-semibold text-base transition-colors duration-150 hover:bg-gold-soft"
+            className="w-full cursor-pointer rounded-control bg-accent py-3 text-sm font-semibold text-on-accent transition-colors duration-150 hover:bg-accent-hover"
           >
             Next hand
           </button>

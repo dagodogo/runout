@@ -1,18 +1,15 @@
-import { PageShell } from '@/components/layout/PageShell';
+import { PageShell, PageHeader } from '@/components/layout/PageShell';
 import { HandSimulator } from '@/components/trainer/HandSimulator';
+import { Badge } from '@/components/ui/Badge';
 
 export function PlayHandPage() {
   return (
     <PageShell>
-      <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="font-display text-3xl font-semibold text-ink sm:text-4xl">Play a Hand</h1>
-          <p className="mt-2 max-w-2xl text-ink-muted">
-            A full hand, start to finish. Every seat plays a realistic strategy — you make your
-            decisions at each street, and get graded the moment you act. Preflop through showdown,
-            just like a real table.
-          </p>
-        </div>
+      <div className="flex flex-col gap-8">
+        <PageHeader title="Play a hand" aside={<Badge className="self-start">Heuristic approximation, not solver output</Badge>}>
+          A full 6-max hand from the deal to showdown. The other seats follow common strategies; you decide on every
+          street and get a grade the moment you act.
+        </PageHeader>
         <HandSimulator />
       </div>
     </PageShell>

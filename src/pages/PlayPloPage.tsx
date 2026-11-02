@@ -1,18 +1,15 @@
-import { PageShell } from '@/components/layout/PageShell';
+import { PageShell, PageHeader } from '@/components/layout/PageShell';
 import { PloHandSimulator } from '@/components/trainer/PloHandSimulator';
+import { Badge } from '@/components/ui/Badge';
 
 export function PlayPloPage() {
   return (
     <PageShell>
-      <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="font-display text-3xl font-semibold text-ink sm:text-4xl">Play a PLO Hand</h1>
-          <p className="mt-2 max-w-2xl text-ink-muted">
-            Pot-Limit Omaha, dealt out for real: four hole cards, exactly two of which make your
-            final hand, and bet sizing capped by the pot instead of your whole stack. Every seat
-            plays a realistic PLO strategy — you make the calls and get graded street by street.
-          </p>
-        </div>
+      <div className="flex flex-col gap-8">
+        <PageHeader title="Play a PLO hand" aside={<Badge className="self-start">Heuristic approximation, not solver output</Badge>}>
+          Pot-Limit Omaha: four hole cards, exactly two of which make your final hand, and bets capped by the pot. The
+          other seats follow common PLO strategies; you decide and get a grade street by street.
+        </PageHeader>
         <PloHandSimulator />
       </div>
     </PageShell>

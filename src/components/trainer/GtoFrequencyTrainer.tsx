@@ -86,16 +86,20 @@ export function GtoFrequencyTrainer() {
             options={rfiPositions.map((p) => ({ value: p, label: RFI_CONFIG[p].label }))}
           />
         </div>
-        <span className="font-mono text-xs text-ink-muted">
+        <span className="tabular-nums text-xs text-ink-muted">
           {session.points} pts &middot; {session.total} hands
         </span>
+      </div>
+
+      <div className="mt-4 flex justify-center">
+        <Badge>Heuristic approximation, not solver output</Badge>
       </div>
 
       <p className="mt-6 text-center text-sm text-ink-muted">
         What raise frequency does a solver-flavored strategy use with this hand from{' '}
         <span className="text-ink">{RFI_CONFIG[position].label}</span>?
       </p>
-      <div className="mt-3 text-center font-mono text-6xl font-bold text-ink">{hand.label}</div>
+      <div className="mt-3 text-center tabular-nums text-6xl font-bold text-ink">{hand.label}</div>
 
       <div className="mt-8 grid grid-cols-3 gap-2 sm:grid-cols-6">
         {GUESS_OPTIONS.map((v) => (
@@ -105,8 +109,8 @@ export function GtoFrequencyTrainer() {
             disabled={guess !== null}
             onClick={() => handleGuess(v)}
             className={cn(
-              'cursor-pointer rounded-xl border py-3 font-mono text-sm font-semibold transition-colors duration-150 disabled:cursor-default',
-              guess === v ? 'border-gold bg-gold/15 text-gold' : 'border-border-strong text-ink hover:border-gold hover:text-gold',
+              'cursor-pointer rounded-control border py-3 tabular-nums text-sm font-semibold transition-colors duration-150 disabled:cursor-default',
+              guess === v ? 'border-bone bg-raised text-bone' : 'border-border-strong text-ink hover:border-bone hover:text-bone',
               guess !== null && guess !== v && 'opacity-40',
             )}
           >
@@ -119,7 +123,7 @@ export function GtoFrequencyTrainer() {
         <div className="mt-6 space-y-4">
           <div className="flex items-center gap-2">
             {grade === 'exact' && <Badge tone="success">Nailed it</Badge>}
-            {grade === 'close' && <Badge tone="gold">Close</Badge>}
+            {grade === 'close' && <Badge tone="success">Close</Badge>}
             {grade === 'off' && <Badge tone="error">Off</Badge>}
             <span className="text-xs text-ink-muted">
               Actual: raise {actualPct}% &middot; fold {100 - actualPct}%
@@ -134,12 +138,12 @@ export function GtoFrequencyTrainer() {
             title={`Actual raise frequency: ${actualPct}%`}
             tone={grade === 'off' ? 'error' : 'success'}
           >
-            {`Hands near a position's threshold aren't played 100/0 — mixing frequencies keeps opponents from exploiting the exact cutoff. This hand sits right in ${RFI_CONFIG[position].label}'s blend zone.`}
+            {`Hands near a position's threshold aren't played 100/0: mixing frequencies keeps opponents from exploiting the exact cutoff. This hand sits right in ${RFI_CONFIG[position].label}'s blend zone.`}
           </ConceptCallout>
           <button
             type="button"
             onClick={nextHand}
-            className="w-full cursor-pointer rounded-xl bg-gold py-3 text-sm font-semibold text-base transition-colors duration-150 hover:bg-gold-soft"
+            className="w-full cursor-pointer rounded-control bg-accent py-3 text-sm font-semibold text-on-accent transition-colors duration-150 hover:bg-accent-hover"
           >
             Next hand
           </button>

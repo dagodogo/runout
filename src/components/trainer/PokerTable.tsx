@@ -67,13 +67,10 @@ export function PokerTable({
   return (
     <div className={cn('relative mx-auto aspect-[16/16] w-full max-w-xl pb-14 pt-4', className)}>
       {/* rail */}
-      <div className="absolute inset-[6%] rounded-[50%] border-[10px] border-surface-3 shadow-2xl" />
+      <div className="absolute inset-[6%] rounded-[50%] border-[10px] border-raised" />
       {/* felt */}
       <div
-        className="absolute inset-[8%] rounded-[50%] border border-gold/25"
-        style={{
-          background: 'radial-gradient(ellipse at 50% 40%, #1a1a1a 0%, #101010 65%, #060606 100%)',
-        }}
+        className="absolute inset-[8%] rounded-[50%] border border-rule-strong bg-panel"
       />
 
       {/* center: pot + board */}
@@ -84,7 +81,7 @@ export function PokerTable({
         {potBb !== undefined && potBb > 0 && (
           <div className="flex flex-col items-center gap-1">
             <ChipStack amountBb={potBb} size="md" />
-            <div className="rounded-full border border-gold/30 bg-base/70 px-2.5 py-0.5 font-mono text-[10px] text-gold">
+            <div className="rounded-full border border-rule-strong bg-black/70 px-2.5 py-0.5 tabular-nums text-xs text-bone">
               Pot {potBb}bb
             </div>
           </div>
@@ -139,19 +136,19 @@ export function PokerTable({
               )}
               <span
                 className={cn(
-                  'whitespace-nowrap rounded-full border px-2 py-0.5 font-mono text-[10px] font-semibold',
+                  'whitespace-nowrap rounded-full border px-2 py-0.5 tabular-nums text-xs font-semibold',
                   isHero
-                    ? 'border-gold bg-gold/15 text-gold'
+                    ? 'border-bone bg-raised text-bone'
                     : isVillain
-                      ? 'border-violet bg-violet/15 text-violet-soft'
-                      : 'border-border-strong bg-surface text-ink-faint',
+                      ? 'border-rule-strong bg-raised text-bone'
+                      : 'border-rule bg-panel text-faint',
                 )}
               >
                 {positionLabel(pos)}
-                {isHero ? ' · YOU' : ''}
+                {isHero ? ' · you' : ''}
                 {isFolded ? ' · folded' : ''}
                 {pos === 'BTN' && (
-                  <span className="ml-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-ink text-[8px] font-bold text-base">
+                  <span className="ml-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-bone text-[8px] font-bold text-black">
                     D
                   </span>
                 )}

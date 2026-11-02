@@ -6,9 +6,9 @@ function ChartTooltip({ active, payload }: { active?: boolean; payload?: { value
   if (!active || !payload?.length) return null;
   const point = payload[0].payload;
   return (
-    <div className="rounded-lg border border-border-strong bg-surface-2 px-3 py-2 text-xs shadow-lg">
+    <div className="rounded-control border border-border-strong bg-raised px-3 py-2 text-sm">
       <div className="text-ink-muted">Hands {point.label}</div>
-      <div className="font-mono font-semibold text-ink">{point.accuracy}% accuracy</div>
+      <div className="tabular-nums font-semibold text-ink">{point.accuracy}% accuracy</div>
     </div>
   );
 }
@@ -44,10 +44,10 @@ export function AccuracyTrendChart({ data }: { data: TrendPoint[] }) {
               <Line
                 type="monotone"
                 dataKey="accuracy"
-                stroke="var(--color-violet)"
+                stroke="var(--color-bone)"
                 strokeWidth={2}
-                dot={<Dot r={3} fill="var(--color-gold)" stroke="none" />}
-                activeDot={{ r: 5, fill: 'var(--color-gold)', stroke: 'var(--color-base)', strokeWidth: 2 }}
+                dot={<Dot r={3} fill="var(--color-bone)" stroke="none" />}
+                activeDot={{ r: 5, fill: 'var(--color-bone)', stroke: 'var(--color-black)', strokeWidth: 2 }}
               />
             </LineChart>
           </ResponsiveContainer>

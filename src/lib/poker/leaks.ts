@@ -1,5 +1,5 @@
-import type { PostflopAttempt, PreflopAttempt } from '@/lib/store/profile';
-import { LEAK_CATEGORY_LABEL, type LeakCategory } from './scenarios';
+import type { DecisionAttempt, PreflopAttempt } from '@/lib/store/profile';
+import { LEAK_CATEGORY_LABEL, type LeakCategory, type Street } from './scenarios';
 import { positionLabel, type Position } from './ranges';
 
 export interface LeakEntry {
@@ -55,12 +55,32 @@ function preflopPositionTip(position: Position): string {
   return 'Early seats have the most players left to act behind them — keep the opening range tight and mostly linear.';
 }
 
-export function postflopLeaks(attempts: PostflopAttempt[]): LeakEntry[] {
+/** Per category: solver rows once there are MIN_SAMPLE of them, otherwise the heuristic rows. */
+export function postflopLeaks(decisions: DecisionAttempt[]): LeakEntry[] {
+  const rows = (Object.keys(LEAK_CATEGORY_LABEL) as LeakCategory[]).flatMap((category) => {
+    const mine = decisions.filter((d) => d.category === category);
+    const solver = mine.filter((d) => d.source === 'solver');
+    return solver.length >= MIN_SAMPLE ? solver : mine.filter((d) => d.source === 'heuristic');
+  });
   return toEntries(
-    attempts.map((a) => ({ key: a.category as LeakCategory, correct: a.correct })),
+    rows.map((a) => ({ key: a.category, correct: a.correct })),
     (key) => LEAK_CATEGORY_LABEL[key],
     (key) => POSTFLOP_LEAK_TIP[key],
   ).filter((e) => e.attempts >= MIN_SAMPLE);
+}
+
+/** Average solver EV lost per 100 graded solver decisions, in bb; null when there are none. */
+export function solverEvLostPer100(decisions: DecisionAttempt[]): { value: number; sample: number } | null {
+  const rows = decisions.filter((d) => d.source === 'solver' && d.evLossBb !== null);
+  if (rows.length === 0) return null;
+  const total = rows.reduce((sum, d) => sum + (d.evLossBb ?? 0), 0);
+  return { value: (total / rows.length) * 100, sample: rows.length };
+}
+
+/** Leak category for a decision the heuristic trainers don't tag: facing a bet is call-or-fold, otherwise bet-or-check. */
+export function spotCategory(street: Street, facingBet: boolean): LeakCategory {
+  if (facingBet) return 'bluff-catch';
+  return street === 'flop' ? 'c-bet' : 'value-sizing';
 }
 
 export function preflopLeaks(attempts: PreflopAttempt[]): LeakEntry[] {
@@ -76,14 +96,14 @@ export function preflopLeaks(attempts: PreflopAttempt[]): LeakEntry[] {
  * for being the lowest of a short list. */
 const LEAK_THRESHOLD = 0.75;
 
-export function topLeaks(preflop: PreflopAttempt[], postflop: PostflopAttempt[], count = 3): LeakEntry[] {
+export function topLeaks(preflop: PreflopAttempt[], postflop: DecisionAttempt[], count = 3): LeakEntry[] {
   return [...preflopLeaks(preflop), ...postflopLeaks(postflop)]
     .filter((e) => e.accuracy < LEAK_THRESHOLD)
     .sort((a, b) => a.accuracy - b.accuracy)
     .slice(0, count);
 }
 
-export function overallAccuracy(preflop: PreflopAttempt[], postflop: PostflopAttempt[]): number {
+export function overallAccuracy(preflop: PreflopAttempt[], postflop: DecisionAttempt[]): number {
   const total = preflop.length + postflop.length;
   if (total === 0) return 0;
   const correct = preflop.filter((a) => a.correct).length + postflop.filter((a) => a.correct).length;

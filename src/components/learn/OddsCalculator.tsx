@@ -28,9 +28,9 @@ export function OddsCalculator() {
             type="button"
             onClick={() => setOuts(preset.outs)}
             className={cn(
-              'cursor-pointer rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors duration-150',
+              'cursor-pointer rounded-control border px-3 py-1.5 text-xs font-medium transition-colors duration-150',
               outs === preset.outs
-                ? 'border-gold bg-gold/15 text-gold'
+                ? 'border-bone bg-raised text-bone'
                 : 'border-border-strong text-ink-muted hover:text-ink',
             )}
           >
@@ -48,7 +48,7 @@ export function OddsCalculator() {
             max={20}
             value={outs}
             onChange={(e) => setOuts(Math.max(0, Math.min(20, Number(e.target.value))))}
-            className="mt-1 w-full rounded-lg border border-border-strong bg-surface-2 px-3 py-2 font-mono text-ink outline-none focus:border-gold"
+            className="mt-1 w-full rounded-control border border-border-strong bg-surface-2 px-3 py-2 tabular-nums text-ink focus:border-bone"
           />
         </label>
 
@@ -57,7 +57,7 @@ export function OddsCalculator() {
           <select
             value={streets}
             onChange={(e) => setStreets(Number(e.target.value) as 1 | 2)}
-            className="mt-1 w-full rounded-lg border border-border-strong bg-surface-2 px-3 py-2 text-ink outline-none focus:border-gold"
+            className="mt-1 w-full rounded-control border border-border-strong bg-surface-2 px-3 py-2 text-ink focus:border-bone"
           >
             <option value={2}>Turn + river</option>
             <option value={1}>One card only</option>
@@ -71,7 +71,7 @@ export function OddsCalculator() {
             min={0}
             value={potSize}
             onChange={(e) => setPotSize(Math.max(0, Number(e.target.value)))}
-            className="mt-1 w-full rounded-lg border border-border-strong bg-surface-2 px-3 py-2 font-mono text-ink outline-none focus:border-gold"
+            className="mt-1 w-full rounded-control border border-border-strong bg-surface-2 px-3 py-2 tabular-nums text-ink focus:border-bone"
           />
         </label>
 
@@ -82,7 +82,7 @@ export function OddsCalculator() {
             min={0}
             value={callAmount}
             onChange={(e) => setCallAmount(Math.max(0, Number(e.target.value)))}
-            className="mt-1 w-full rounded-lg border border-border-strong bg-surface-2 px-3 py-2 font-mono text-ink outline-none focus:border-gold"
+            className="mt-1 w-full rounded-control border border-border-strong bg-surface-2 px-3 py-2 tabular-nums text-ink focus:border-bone"
           />
         </label>
       </div>
@@ -105,9 +105,9 @@ export function OddsCalculator() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-border bg-surface-2 p-3">
-      <div className="text-[10px] font-medium uppercase tracking-wide text-ink-faint">{label}</div>
-      <div className="mt-1 font-mono text-lg font-semibold text-ink">{value}</div>
+    <div className="rounded-control border border-border bg-surface-2 p-3">
+      <div className="text-xs font-medium text-ink-faint">{label}</div>
+      <div className="mt-1 tabular-nums text-lg font-semibold text-ink">{value}</div>
     </div>
   );
 }
